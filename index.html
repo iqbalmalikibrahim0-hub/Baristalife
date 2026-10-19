@@ -180,7 +180,7 @@ function stopPour(){if(!B.pour)return;B.pour=false;
  while(B.stage<4&&B.water>=T[B.stage]-1){B.over+=Math.min(30,Math.max(0,B.water-T[B.stage]-2));if(B.stage===0)B.bloomAt=B.t;B.stage++}
  ui()}
 function togglePour(){B.pour?stopPour():startPour()}
-function again(){stopPour();resetBrew();$('fl').value=B.flow;$('fv').textContent='5.0';lastUi='';ui();draw()}
+function again(){stopPour();resetBrew();$('fl').value=B.flow;$('fv').B.flow.toFixed(1);lastUi='';ui();draw()}
 
 function loop(ts){
  if(!view)return;

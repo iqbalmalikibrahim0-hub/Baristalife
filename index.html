@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Barista Life — Coffee Shop Simulator</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#1d1713;color:#f3e7d3;font:15px/1.4 ui-monospace,"Courier New",monospace;overscroll-behavior:none}
+#app{max-width:760px;margin:0 auto;height:100dvh;display:flex;flex-direction:column}
+header{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:8px 10px;background:#2b2019;border-bottom:3px solid #000}
+header h1{font-size:15px;margin:0}
+.st{display:flex;gap:10px;font-weight:bold;color:#f0b24a}
+svg{display:block;shape-rendering:crispEdges}
+#sw{position:relative;width:min(100%,56dvh);margin:0 auto;flex:none}
+#sw svg{width:100%;height:auto}
+.ol{display:none;fill:none;stroke:#f0b24a;stroke-width:1;stroke-dasharray:3 2}
+.hl .ol{display:block}
+#bub{position:absolute;right:20%;top:4%;max-width:48%;background:#f3e7d3;color:#1d1713;padding:5px 7px;font-size:12px;border:2px solid #000;border-radius:3px}
+#pn{flex:1;overflow:auto;padding:10px;display:flex;flex-direction:column;gap:8px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+h2{margin:0;font-size:16px;color:#f0b24a}
+p{margin:0}
+.b{width:100%;min-height:44px;padding:10px 12px;border:0;border-radius:4px;background:#f0b24a;color:#1d1713;font:bold 15px ui-monospace,"Courier New",monospace;box-shadow:0 3px 0 #8a5f1e;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;cursor:pointer}
+.b.s{background:#4b3a2d;color:#f3e7d3;box-shadow:0 3px 0 #000}
+.b.sm{width:auto;min-height:36px;padding:6px 10px;font-size:13px}
+.b:active{transform:translateY(2px)}
+.b:disabled{opacity:.4;cursor:default}
+.b:focus-visible,input:focus-visible{outline:3px solid #fff}
+.lcd{background:#0d2b14;color:#8be08b;border:3px solid #000;padding:4px 10px;font-size:26px;text-align:right;letter-spacing:2px}
+input[type=range]{width:100%;height:34px;accent-color:#f0b24a}
+.row{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dashed #5a4636;padding:3px 0}
+.stars{font-size:28px;color:#f0b24a}
+#bw{position:fixed;inset:0;background:#1d1713;display:flex;flex-direction:column;z-index:9;max-width:760px;margin:0 auto}
+.hid{display:none!important}
+.bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;padding-top:max(8px,env(safe-area-inset-top))}
+#bs{flex:1 1 0;min-height:0;width:100%;touch-action:none;cursor:grab}
+#stg{padding:4px 10px;font-size:13px;min-height:58px}
+.chip{display:inline-block;padding:2px 8px;margin:0 4px 4px 0;border:2px solid #5a4636}
+.chip.cur{border-color:#f0b24a;color:#f0b24a}.chip.done{background:#2e5a37;border-color:#2e5a37}
+.ctl{padding:6px 10px max(10px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:6px;background:#2b2019;border-top:3px solid #000}
+.r3{display:flex;gap:6px}.r3 .b{width:auto;flex:1}
+@media (prefers-reduced-motion:no-preference){.hl .ol{animation:bl 1s steps(2) infinite}@keyframes bl{50%{opacity:.3}}}
+</style>
+</head>
+<body>
+<div id="app">
+ <header><h1>☕ Barista Life</h1><div class="st"><span id="money"></span><span id="rep"></span></div><button class="b s sm" onclick="restart()">↻ Mulai ulang</button></header>
+ <div id="sw">
+  <svg id="scn" viewBox="0 0 160 100" role="img" aria-label="Kedai kopi dilihat dari belakang meja barista">
+   <rect width="160" height="62" fill="#34545a"/>
+   <rect x="60" y="6" width="36" height="22" fill="#1f2f31"/><rect x="62" y="8" width="32" height="18" fill="#8fc1c9"/><rect x="77" y="8" width="2" height="18" fill="#1f2f31"/><rect x="62" y="16" width="32" height="2" fill="#1f2f31"/>
+   <rect x="102" y="8" width="20" height="14" fill="#1f2f31"/><rect x="105" y="12" width="14" height="1" fill="#f3e7d3"/><rect x="105" y="16" width="10" height="1" fill="#f3e7d3"/>
+   <rect x="13" y="0" width="2" height="8" fill="#1f2f31"/><rect x="9" y="8" width="10" height="4" fill="#f0b24a"/><rect x="8" y="12" width="12" height="2" fill="#f0b24a" opacity=".3"/>
+   <g id="cus">
+    <rect x="132" y="22" width="14" height="13" fill="#e0b48a"/><rect x="132" y="20" width="14" height="5" fill="#3a2418"/>
+    <rect x="136" y="28" width="2" height="2" fill="#222"/><rect x="141" y="28" width="2" height="2" fill="#222"/>
+    <g id="mo" fill="#3a1a1a"></g>
+    <g id="sh" fill="#3f6fb5"><rect x="128" y="35" width="22" height="26"/><rect x="125" y="38" width="4" height="18"/></g>
+   </g>
+   <rect y="60" width="160" height="6" fill="#b98b5c"/><rect y="66" width="160" height="34" fill="#6b4a33"/>
+   <rect y="78" width="160" height="1" fill="#523823"/><rect y="90" width="160" height="1" fill="#523823"/>
+   <g id="g-jar"><rect x="6" y="40" width="16" height="20" fill="#cfe3e0"/><rect x="6" y="48" width="16" height="12" fill="#4a2c1a"/><rect x="5" y="37" width="18" height="4" fill="#2b1d14"/><rect x="8" y="42" width="2" height="14" fill="#fff" opacity=".3"/><rect class="ol" x="4" y="35" width="20" height="26"/></g>
+   <g id="g-gri"><rect x="30" y="40" width="18" height="20" fill="#3b3f45"/><rect x="31" y="30" width="16" height="10" fill="#cfe3e0" opacity=".8"/><rect x="32" y="34" width="14" height="6" fill="#4a2c1a"/><rect x="30" y="27" width="18" height="3" fill="#2b2b2b"/><rect x="33" y="44" width="6" height="6" fill="#f0b24a"/><rect x="40" y="52" width="6" height="5" fill="#22262b"/><rect class="ol" x="27" y="25" width="23" height="36"/></g>
+   <g id="g-scl"><rect x="56" y="57" width="38" height="4" fill="#2b2b2b"/><rect x="82" y="58" width="10" height="2" fill="#8be08b"/><rect x="58" y="54" width="34" height="3" fill="#c9ced2"/><rect class="ol" x="54" y="52" width="42" height="10"/></g>
+   <g id="g-drp"><rect x="64" y="44" width="22" height="10" fill="#d8ecee" opacity=".7"/><rect x="65" y="50" width="20" height="4" fill="#5a3320"/><rect x="70" y="40" width="10" height="4" fill="#d8ecee" opacity=".7"/><polygon points="60,34 90,34 82,44 68,44" fill="#f1efe8"/><rect x="59" y="32" width="32" height="3" fill="#d9d3c4"/><rect x="64" y="35" width="22" height="3" fill="#4a2c1a"/><rect class="ol" x="57" y="29" width="36" height="26"/></g>
+   <g id="g-ket" fill="#8b949c"><rect x="100" y="40" width="16" height="20"/><rect x="102" y="37" width="12" height="3" fill="#aab2b9"/><rect x="106" y="34" width="4" height="3" fill="#2b2b2b"/><rect x="116" y="42" width="4" height="12" fill="#2b2b2b"/><rect x="98" y="52" width="3" height="4"/><rect x="96" y="46" width="3" height="7"/><rect x="94" y="44" width="4" height="3"/><rect class="ol" x="92" y="32" width="30" height="30"/></g>
+  </svg>
+  <div id="bub" style="display:none"></div>
+ </div>
+ <div id="pn"></div>
+</div>
+
+<div id="bw" class="hid">
+ <div class="bar"><button class="b s sm" onclick="closeBrew()">← Kembali ke kedai</button><div class="lcd" id="tm">0:00</div></div>
+ <svg id="bs" viewBox="0 0 160 110" role="img" aria-label="Tampilan dekat dripper V60">
+  <rect width="160" height="110" fill="#34545a"/>
+  <text x="80" y="10" font-size="5" fill="#f3e7d3" opacity=".7" text-anchor="middle" font-family="monospace">Seret layar untuk menggerakkan teko</text>
+  <rect y="84" width="160" height="26" fill="#6b4a33"/><rect y="84" width="160" height="3" fill="#b98b5c"/>
+  <rect x="40" y="88" width="80" height="12" fill="#2b2b2b"/><rect x="84" y="91" width="30" height="6" fill="#0d2b14"/>
+  <text id="sc" x="99" y="96" font-size="5" fill="#8be08b" text-anchor="middle" font-family="monospace">0.0 g</text>
+  <rect x="44" y="84" width="72" height="4" fill="#c9ced2" opacity="0"/>
+  <rect x="56" y="60" width="48" height="24" fill="#d8ecee" opacity=".35"/><rect id="cf" x="57" y="84" width="46" height="0" fill="#5a3320"/>
+  <rect x="66" y="50" width="28" height="10" fill="#d8ecee" opacity=".35"/>
+  <polygon points="46,34 114,34 94,52 66,52" fill="#f1efe8"/><rect x="44" y="32" width="72" height="3" fill="#d9d3c4"/>
+  <polygon id="bed" points="54,36 106,36 92,50 68,50" fill="#8a6a46"/>
+  <rect x="66" y="29" width="28" height="2" fill="#f0b24a"/>
+  <rect id="st" width="2" fill="#7ec8ff" style="display:none"/>
+  <g id="kt" fill="#8b949c" transform="translate(80,22)"><rect x="0" y="0" width="3" height="3"/><rect x="2" y="-3" width="3" height="4"/><rect x="4" y="-6" width="3" height="4"/><rect x="6" y="-8" width="3" height="10"/><rect x="8" y="-6" width="26" height="22"/><rect x="12" y="-10" width="18" height="4" fill="#aab2b9"/><rect x="19" y="-13" width="4" height="3" fill="#2b2b2b"/><rect x="34" y="-4" width="6" height="16" fill="#2b2b2b"/></g>
+ </svg>
+ <div id="stg"></div>
+ <div class="ctl">
+  <label>Aliran air: <b id="fv">5.0</b> g/detik <input type="range" id="fl" min="1" max="12" step=".5" value="5" oninput="B.flow=+this.value;$('fv').textContent=B.flow.toFixed(1)"></label>
+  <button id="pb" class="b" onclick="togglePour()">Mulai tuang</button>
+  <div class="r3"><button class="b s sm" onclick="B.kx=80;B.ky=22">Pusatkan teko</button><button class="b s sm" onclick="again()">Ulang seduh</button><button id="fin" class="b sm" onclick="finishBrew()" disabled>Selesai seduh</button></div>
+ </div>
+</div>
+
+<script>
+// ===== Bantuan kecil =====
+const $=id=>document.getElementById(id);
+const cl=(v,a=0,b=100)=>Math.max(a,Math.min(b,v));
+const fmt=t=>Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0');
+
+// ===== Simpanan (localStorage): uang, reputasi, jumlah pelanggan =====
+const KEY='barista-life-v1';
+let save={money:0,rep:0,served:0};
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&typeof s.money==='number')save={money:s.money,rep:s.rep||0,served:s.served||0}}catch(e){}
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}};
+
+// ===== Data game =====
+const BEANS=[
+ {n:'Ethiopia Yirgacheffe',d:'Wangi bunga, sangrai terang',g:4,t:94},
+ {n:'Kenya AA',d:'Segar, buah merah, sangrai sedang',g:5,t:93},
+ {n:'Brasil Santos',d:'Cokelat dan kacang, sangrai gelap',g:6,t:90}];
+const T=[40,120,180,225];            // target air kumulatif (resep contoh)
+const SH=['#3f6fb5','#b5533f','#5a9a5a','#8b5fb5','#d9a441'];
+const PH=['order','bean','grind','weigh','prep','temp','brew','result','served'];
+const TTL=['Pesanan masuk','Pilih biji kopi','Atur gilingan','Giling dan timbang','Siapkan V60','Atur suhu air','Seduh V60','Hasil seduhan','Disajikan'];
+const HL={bean:['jar'],grind:['gri'],weigh:['gri','scl'],prep:['drp'],temp:['ket'],brew:['drp','ket']};
+const MOUTH=['<rect x="137" y="32" width="6" height="1"/>','<rect x="136" y="31" width="1" height="1"/><rect x="137" y="32" width="6" height="1"/><rect x="143" y="31" width="1" height="1"/>','<rect x="136" y="33" width="1" height="1"/><rect x="137" y="32" width="6" height="1"/><rect x="143" y="33" width="1" height="1"/>'];
+const CM=['Hmm... kurang enak.','Lumayan, tapi bisa lebih baik.','Enak kok, terima kasih!','Wah, enak banget!','Luar biasa! Aku pasti balik lagi!'];
+const HINT=['Bloom: tuang pelan sampai 40 g, lalu tunggu sekitar 30 detik.','Tuang pelan sampai 120 g. Jaga teko di zona kuning.','Lanjut tuang sampai 180 g.','Tuang terakhir sampai 225 g, lalu hentikan.','Semua target tercapai. Tekan Selesai seduh.'];
+
+// ===== Status game =====
+let S,B,view=false,raf=0,last=0,hold=null,drag=false,lastUi='';
+function newOrder(){S={ph:'idle',bean:null,grind:5,grams:0,prep:0,temp:93,res:null,mood:0,shirt:SH[Math.random()*SH.length|0]};resetBrew()}
+function resetBrew(){B={water:0,dr:0,spill:0,spillT:0,t:0,started:false,pour:false,flow:5,stage:0,over:0,off:0,offN:0,harsh:0,early:false,bloomAt:null,kx:80,ky:22}}
+function go(ph){stopHold();S.ph=ph;if(ph==='brew'){resetBrew();render();openBrew()}else render()}
+
+// ===== Tampilan utama =====
+function render(){
+ stopHold();
+ $('money').textContent='Rp '+save.money.toLocaleString('id-ID');
+ $('rep').textContent='★ '+save.rep;
+ const on=S.ph!=='idle';
+ $('cus').style.display=on?'':'none';
+ $('sh').setAttribute('fill',S.shirt);
+ $('mo').innerHTML=MOUTH[S.mood];
+ const h=HL[S.ph]||[];
+ ['jar','gri','scl','drp','ket'].forEach(i=>$('g-'+i).classList.toggle('hl',h.includes(i)));
+ const say=S.ph==='order'?'Halo! Satu V60, ya!':S.ph==='served'?S.comment:'';
+ $('bub').style.display=say?'':'none';$('bub').textContent=say;
+ $('pn').innerHTML=panel();
+}
+function panel(){
+ const n=PH.indexOf(S.ph)+1;
+ const hd=n?`<h2>Langkah ${n}/9 — ${TTL[n-1]}</h2>`:'';
+ const bn=S.bean!==null?BEANS[S.bean]:null;
+ switch(S.ph){
+ case 'idle':return `<h2>Kedai sudah buka</h2><p>Belum ada pelanggan. Siap melayani?</p><button class="b" onclick="go('order')">Panggil pelanggan</button><button class="b s" onclick="wipe()">Hapus data simpanan</button>`;
+ case 'order':return `${hd}<p>Pelanggan memesan <b>1 V60</b>. Resep contoh: 15 g kopi dan 225 g air.</p><button class="b" onclick="go('bean')">Terima pesanan</button>`;
+ case 'bean':return `${hd}<p>Pilih biji untuk V60 ini:</p>`+BEANS.map((b,i)=>`<button class="b s" onclick="S.bean=${i};go('grind')"><b>${b.n}</b><br><small>${b.d}</small></button>`).join('');
+ case 'grind':return `${hd}<p>Biji: <b>${bn.n}</b>. Geser: 1 = sangat halus, 10 = kasar.</p><div class="lcd" id="gv">${S.grind}</div><input type="range" min="1" max="10" step="1" value="${S.grind}" oninput="S.grind=+this.value;$('gv').textContent=S.grind"><p><small>Saran untuk biji ini: sekitar ${bn.g}.</small></p><button class="b" onclick="go('weigh')">Lanjut</button><button class="b s" onclick="go('bean')">Ganti biji</button>`;
+ case 'weigh':return `${hd}<p>Tahan tombol untuk menggiling. Target <b>15 g</b> (minimal 5 g untuk lanjut).</p><div class="lcd" id="lcd">${S.grams.toFixed(1)} g</div><button class="b" id="gb" style="touch-action:none" onpointerdown="holdOn(event)" onpointerup="stopHold()" onpointercancel="stopHold()" onpointerleave="stopHold()">Tahan untuk menggiling</button><button class="b s" onclick="S.grams=Math.max(0,S.grams-1);updW()">Buang 1 g</button><button class="b" id="nx" onclick="go('prep')" ${S.grams<5?'disabled':''}>Lanjut</button><button class="b s" onclick="go('grind')">Kembali</button>`;
+ case 'prep':{const P=['Pasang dripper di atas server','Letakkan dan bilas kertas filter','Masukkan kopi giling ke filter'];
+  return `${hd}<p>Lakukan berurutan:</p>`+P.map((t,i)=>`<button class="b s" ${i!==S.prep?'disabled':''} onclick="S.prep++;render()">${i<S.prep?'✓ ':''}${t}</button>`).join('')+(S.prep>=3?`<button class="b" onclick="go('temp')">Lanjut</button>`:'')+`<button class="b s" onclick="go('weigh')">Kembali</button>`}
+ case 'temp':return `${hd}<p>Suhu air untuk <b>${bn.n}</b>. Saran: sekitar ${bn.t}°C.</p><div class="lcd" id="tv">${S.temp}°C</div><input type="range" min="80" max="100" step="1" value="${S.temp}" oninput="S.temp=+this.value;$('tv').textContent=S.temp+'°C'"><button class="b" onclick="go('brew')">Mulai seduh</button><button class="b s" onclick="go('prep')">Kembali</button>`;
+ case 'brew':return `${hd}<p>Tampilan seduh sedang ditutup. Waktu berhenti sementara.</p><button class="b" onclick="openBrew()">Buka tampilan seduh</button>`;
+ case 'result':{const R=S.res;
+  const rows=[['Rasio',`1:${R.ratio.toFixed(1)}`,R.sc.ratio],['Gilingan',S.grind,R.sc.grind],['Suhu',S.temp+'°C',R.sc.temp],['Waktu',fmt(R.total),R.sc.time],['Konsistensi','',R.sc.cons]];
+  return `${hd}`+rows.map(r=>`<div class="row"><span>${r[0]}</span><span>${r[1]}</span><b>${Math.round(r[2])}</b></div>`).join('')+`<p>Rasa menurut simulasi: ${R.taste}.</p><div class="lcd">Skor ${Math.round(R.score)}</div><button class="b" onclick="serve()">Sajikan kopi</button><p><small>Penilaian ini simulasi sederhana, bukan pengukuran ekstraksi sungguhan.</small></p>`}
+ case 'served':return `${hd}<div class="stars">${'★'.repeat(S.stars)}${'☆'.repeat(5-S.stars)}</div><p>“${S.comment}”</p><p>Pendapatan: <b>Rp ${S.earn.toLocaleString('id-ID')}</b><br>Reputasi: ${S.d>=0?'+':''}${S.d}</p><button class="b" onclick="nextC()">Pelanggan berikutnya</button>`;
+ }
+}
+
+// ===== Tombol di panel =====
+function holdOn(e){e.preventDefault();if(hold)return;hold=setInterval(()=>{S.grams=Math.min(30,S.grams+.25);updW()},80)}
+function stopHold(){if(hold){clearInterval(hold);hold=null}}
+function updW(){const l=$('lcd');if(!l)return;l.textContent=S.grams.toFixed(1)+' g';l.style.color=Math.abs(S.grams-15)<=.5?'#fff':'';$('nx').disabled=S.grams<5}
+document.oncontextmenu=e=>{if(e.target.closest&&e.target.closest('#gb'))e.preventDefault()};
+function restart(){closeBrew();if(S.ph==='idle'||S.ph==='served'){newOrder();go('order')}else{const sh=S.shirt;newOrder();S.shirt=sh;go('bean')}}
+function nextC(){newOrder();go('order')}
+function wipe(){if(confirm('Hapus uang dan reputasi yang tersimpan?')){save={money:0,rep:0,served:0};persist();render()}}
+
+// ===== Tampilan seduh (dekat) =====
+function openBrew(){view=true;$('bw').classList.remove('hid');$('fl').value=B.flow;$('fv').textContent=B.flow.toFixed(1);last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);lastUi='';ui()}
+function closeBrew(){stopPour();view=false;cancelAnimationFrame(raf);$('bw').classList.add('hid');if(S.ph==='brew')render()}
+function startPour(){if(B.pour||B.water>=260)return;if(B.stage===1&&B.bloomAt!==null&&B.t-B.bloomAt<20)B.early=true;B.started=true;B.pour=true;ui()}
+function stopPour(){if(!B.pour)return;B.pour=false;
+ while(B.stage<4&&B.water>=T[B.stage]-1){B.over+=Math.min(30,Math.max(0,B.water-T[B.stage]-2));if(B.stage===0)B.bloomAt=B.t;B.stage++}
+ ui()}
+function togglePour(){B.pour?stopPour():startPour()}
+function again(){stopPour();resetBrew();$('fl').value=B.flow;$('fv').textContent='5.0';lastUi='';ui();draw()}
+
+function loop(ts){
+ if(!view)return;
+ const dt=cl((ts-last)/1000,0,.1);last=ts;
+ if(B.started)B.t+=dt;
+ if(B.pour){
+  const dx=Math.abs(B.kx-80),a=B.flow*dt;
+  if(dx<=30){B.water+=a;B.off+=dx*dt;B.offN+=dt}else{B.spill+=a;B.spillT+=dt}
+  if(B.flow>9)B.harsh+=dt;
+  if(B.water>=260){B.water=260;stopPour()}
+ }
+ B.dr+=(B.water-B.dr)*Math.min(1,dt*.7);
+ draw();ui();
+ raf=requestAnimationFrame(loop);
+}
+function draw(){
+ $('sc').textContent=B.water.toFixed(1)+' g';
+ $('tm').textContent=fmt(B.t);
+ $('kt').setAttribute('transform',`translate(${B.kx.toFixed(1)},${B.ky.toFixed(1)})`);
+ const on=Math.abs(B.kx-80)<=30,s=$('st');
+ s.style.display=B.pour?'':'none';
+ s.setAttribute('x',B.kx-1);s.setAttribute('y',B.ky+1);s.setAttribute('height',Math.max(1,(on?42:84)-B.ky-1));
+ const h=B.dr/260*24;$('cf').setAttribute('y',84-h);$('cf').setAttribute('height',h);
+ $('bed').setAttribute('fill',B.water>0?'#4a2c1a':'#8a6a46');
+}
+function ui(){
+ $('pb').textContent=B.pour?'Berhenti':'Mulai tuang';
+ $('pb').classList.toggle('s',B.pour);
+ $('fin').disabled=B.water<20||B.pour;
+ const w=B.bloomAt!==null&&B.stage===1?20-(B.t-B.bloomAt):0;
+ const h=w>0?`Bloom: tunggu ${Math.ceil(w)} detik lagi`:HINT[B.stage];
+ const chips=T.map((g,i)=>`<span class="chip ${i<B.stage?'done':i===B.stage?'cur':''}">${i<B.stage?'✓ ':''}${g} g</span>`).join('');
+ const k=chips+h+(B.spill>1?` | Tumpah ${B.spill.toFixed(0)} g`:'');
+ if(k!==lastUi){lastUi=k;$('stg').innerHTML=chips+'<br>'+h+(B.spill>1?`<br>Tumpah: ${B.spill.toFixed(0)} g`:'')}
+}
+// Gerakkan teko dengan mouse atau jari
+const bs=$('bs');
+function mv(e){const p=bs.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const q=p.matrixTransform(bs.getScreenCTM().inverse());B.kx=cl(q.x,10,150);B.ky=cl(q.y-14,4,28)}
+bs.onpointerdown=e=>{try{bs.setPointerCapture(e.pointerId)}catch(x){}drag=true;mv(e)};
+bs.onpointermove=e=>{if(drag)mv(e)};
+bs.onpointerup=bs.onpointercancel=()=>{drag=false};
+
+// ===== Penilaian =====
+function finishBrew(){
+ if(B.water<20)return;
+ stopPour();
+ const bn=BEANS[S.bean];
+ const draw=cl(30+(5-S.grind)*6,12,70);          // gilingan halus = turun lebih lambat
+ const total=B.t+draw,ratio=B.water/S.grams;
+ const sc={
+  ratio:cl(100-Math.abs(ratio-15)*18),
+  grind:cl(100-Math.abs(S.grind-bn.g)*16),
+  temp:cl(100-Math.abs(S.temp-bn.t)*7),
+  time:cl(100-(total<120?120-total:total>200?total-200:0)*.9),
+  cons:cl(100-B.spillT*14-B.over*2.5-(B.offN?B.off/B.offN:0)*2.5-B.ha

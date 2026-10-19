@@ -235,4 +235,24 @@ function finishBrew(){
   grind:cl(100-Math.abs(S.grind-bn.g)*16),
   temp:cl(100-Math.abs(S.temp-bn.t)*7),
   time:cl(100-(total<120?120-total:total>200?total-200:0)*.9),
-  cons:cl(100-B.spillT*14-B.over*2.5-(B.offN?B.off/B.offN:0)*2.5-B.ha
+  cons:cl(100-B.spillT*14-B.over*2.5-(B.offN?B.off/B.offN:0)*2.5-B.harsh*5-(B.early?8:0))};
+ const score=sc.ratio*.2+sc.grind*.25+sc.temp*.15+sc.time*.15+sc.cons*.25;
+ const x=(S.grind-bn.g)+(bn.t-S.temp)/3+(total<120?2:total>200?-2:0);
+ const taste=x>1.5?'cenderung asam dan tipis':x<-1.5?'cenderung pahit dan kering':'cukup seimbang';
+ S.res={sc,score,ratio,total,taste};
+ closeBrew();go('result');
+}
+function serve(){
+ const R=S.res,n=cl(Math.round(R.score/20),1,5);
+ S.stars=n;S.d=n>=4?2:n===3?1:-1;S.earn=10000+Math.round(R.score)*300;
+ save.money+=S.earn;save.rep=Math.max(0,save.rep+S.d);save.served++;persist();
+ S.mood=n>=4?1:n===3?0:2;S.comment=CM[n-1];
+ go('served');
+}
+
+newOrder();render();
+</script>
+</body>
+</html>
+
+    

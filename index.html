@@ -12,11 +12,13 @@ header{display:flex;gap:8px;align-items:center;justify-content:space-between;pad
 header h1{font-size:15px;margin:0}
 .st{display:flex;gap:10px;font-weight:bold;color:#f0b24a}
 svg{display:block;shape-rendering:crispEdges}
-#sw{position:relative;width:min(100%,56dvh);margin:0 auto;flex:none}
+#sw{position:relative;width:min(100%,56dvh);margin:0 auto;flex:none;border-bottom:3px solid #000}
 #sw svg{width:100%;height:auto}
-.ol{display:none;fill:none;stroke:#f0b24a;stroke-width:1;stroke-dasharray:3 2}
+[data-eq]{cursor:pointer}
+.ol{display:none;fill:none;stroke:#f0b24a;stroke-width:1;stroke-dasharray:3 2;pointer-events:none}
 .hl .ol{display:block}
-#bub{position:absolute;right:20%;top:4%;max-width:48%;background:#f3e7d3;color:#1d1713;padding:5px 7px;font-size:12px;border:2px solid #000;border-radius:3px}
+#bub{position:absolute;right:20%;top:4%;max-width:48%;background:#f6ecd2;color:#1d1713;padding:5px 7px;font-size:12px;border:2px solid #000;border-radius:3px}
+#home{position:absolute;right:4px;bottom:6px}
 #pn{flex:1;overflow:auto;padding:10px;display:flex;flex-direction:column;gap:8px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
 h2{margin:0;font-size:16px;color:#f0b24a}
 p{margin:0}
@@ -39,33 +41,27 @@ input[type=range]{width:100%;height:34px;accent-color:#f0b24a}
 .chip.cur{border-color:#f0b24a;color:#f0b24a}.chip.done{background:#2e5a37;border-color:#2e5a37}
 .ctl{padding:6px 10px max(10px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:6px;background:#2b2019;border-top:3px solid #000}
 .r3{display:flex;gap:6px}.r3 .b{width:auto;flex:1}
-@media (prefers-reduced-motion:no-preference){.hl .ol{animation:bl 1s steps(2) infinite}@keyframes bl{50%{opacity:.3}}}
+/* Animasi tenang (mati otomatis jika pengguna memilih mengurangi gerakan) */
+@media (prefers-reduced-motion:no-preference){
+ .hl .ol{animation:bl 1s steps(2) infinite}@keyframes bl{50%{opacity:.3}}
+ .stm rect{opacity:0;animation:up 3.2s linear infinite}
+ .stm rect:nth-child(2){animation-delay:1.1s}.stm rect:nth-child(3){animation-delay:2.1s}
+ @keyframes up{0%{opacity:0;transform:translateY(0)}25%{opacity:.55}100%{opacity:0;transform:translateY(-9px)}}
+ .lg{animation:fl 4.5s ease-in-out infinite}.beam{animation:fl 7s ease-in-out infinite}
+ @keyframes fl{50%{opacity:.6}}
+ .sway{transform-box:fill-box;transform-origin:50% 100%;animation:sw 5s ease-in-out infinite}
+ @keyframes sw{50%{transform:rotate(2.5deg)}}
+ .bob{animation:bob 3.2s steps(2,jump-none) infinite}@keyframes bob{50%{transform:translateY(.6px)}}
+}
 </style>
 </head>
 <body>
 <div id="app">
- <header><h1>☕ Barista Life</h1><div class="st"><span id="money"></span><span id="rep"></span></div><button class="b s sm" onclick="restart()">↻ Mulai ulang</button></header>
+ <header><h1>Barista Life</h1><div class="st"><span id="money"></span><span id="rep"></span></div><button class="b s sm" onclick="restart()">↻ Mulai ulang</button></header>
  <div id="sw">
-  <svg id="scn" viewBox="0 0 160 100" role="img" aria-label="Kedai kopi dilihat dari belakang meja barista">
-   <rect width="160" height="62" fill="#34545a"/>
-   <rect x="60" y="6" width="36" height="22" fill="#1f2f31"/><rect x="62" y="8" width="32" height="18" fill="#8fc1c9"/><rect x="77" y="8" width="2" height="18" fill="#1f2f31"/><rect x="62" y="16" width="32" height="2" fill="#1f2f31"/>
-   <rect x="102" y="8" width="20" height="14" fill="#1f2f31"/><rect x="105" y="12" width="14" height="1" fill="#f3e7d3"/><rect x="105" y="16" width="10" height="1" fill="#f3e7d3"/>
-   <rect x="13" y="0" width="2" height="8" fill="#1f2f31"/><rect x="9" y="8" width="10" height="4" fill="#f0b24a"/><rect x="8" y="12" width="12" height="2" fill="#f0b24a" opacity=".3"/>
-   <g id="cus">
-    <rect x="132" y="22" width="14" height="13" fill="#e0b48a"/><rect x="132" y="20" width="14" height="5" fill="#3a2418"/>
-    <rect x="136" y="28" width="2" height="2" fill="#222"/><rect x="141" y="28" width="2" height="2" fill="#222"/>
-    <g id="mo" fill="#3a1a1a"></g>
-    <g id="sh" fill="#3f6fb5"><rect x="128" y="35" width="22" height="26"/><rect x="125" y="38" width="4" height="18"/></g>
-   </g>
-   <rect y="60" width="160" height="6" fill="#b98b5c"/><rect y="66" width="160" height="34" fill="#6b4a33"/>
-   <rect y="78" width="160" height="1" fill="#523823"/><rect y="90" width="160" height="1" fill="#523823"/>
-   <g id="g-jar"><rect x="6" y="40" width="16" height="20" fill="#cfe3e0"/><rect x="6" y="48" width="16" height="12" fill="#4a2c1a"/><rect x="5" y="37" width="18" height="4" fill="#2b1d14"/><rect x="8" y="42" width="2" height="14" fill="#fff" opacity=".3"/><rect class="ol" x="4" y="35" width="20" height="26"/></g>
-   <g id="g-gri"><rect x="30" y="40" width="18" height="20" fill="#3b3f45"/><rect x="31" y="30" width="16" height="10" fill="#cfe3e0" opacity=".8"/><rect x="32" y="34" width="14" height="6" fill="#4a2c1a"/><rect x="30" y="27" width="18" height="3" fill="#2b2b2b"/><rect x="33" y="44" width="6" height="6" fill="#f0b24a"/><rect x="40" y="52" width="6" height="5" fill="#22262b"/><rect class="ol" x="27" y="25" width="23" height="36"/></g>
-   <g id="g-scl"><rect x="56" y="57" width="38" height="4" fill="#2b2b2b"/><rect x="82" y="58" width="10" height="2" fill="#8be08b"/><rect x="58" y="54" width="34" height="3" fill="#c9ced2"/><rect class="ol" x="54" y="52" width="42" height="10"/></g>
-   <g id="g-drp"><rect x="64" y="44" width="22" height="10" fill="#d8ecee" opacity=".7"/><rect x="65" y="50" width="20" height="4" fill="#5a3320"/><rect x="70" y="40" width="10" height="4" fill="#d8ecee" opacity=".7"/><polygon points="60,34 90,34 82,44 68,44" fill="#f1efe8"/><rect x="59" y="32" width="32" height="3" fill="#d9d3c4"/><rect x="64" y="35" width="22" height="3" fill="#4a2c1a"/><rect class="ol" x="57" y="29" width="36" height="26"/></g>
-   <g id="g-ket" fill="#8b949c"><rect x="100" y="40" width="16" height="20"/><rect x="102" y="37" width="12" height="3" fill="#aab2b9"/><rect x="106" y="34" width="4" height="3" fill="#2b2b2b"/><rect x="116" y="42" width="4" height="12" fill="#2b2b2b"/><rect x="98" y="52" width="3" height="4"/><rect x="96" y="46" width="3" height="7"/><rect x="94" y="44" width="4" height="3"/><rect class="ol" x="92" y="32" width="30" height="30"/></g>
-  </svg>
+  <svg id="scn" viewBox="0 0 160 100" role="img" aria-label="Kedai kopi dilihat dari belakang meja barista"></svg>
   <div id="bub" style="display:none"></div>
+  <button id="home" class="b s sm" style="display:none" onclick="peek=null;home=true">Lihat kedai</button>
  </div>
  <div id="pn"></div>
 </div>
@@ -73,19 +69,24 @@ input[type=range]{width:100%;height:34px;accent-color:#f0b24a}
 <div id="bw" class="hid">
  <div class="bar"><button class="b s sm" onclick="closeBrew()">← Kembali ke kedai</button><div class="lcd" id="tm">0:00</div></div>
  <svg id="bs" viewBox="0 0 160 110" role="img" aria-label="Tampilan dekat dripper V60">
-  <rect width="160" height="110" fill="#34545a"/>
-  <text x="80" y="10" font-size="5" fill="#f3e7d3" opacity=".7" text-anchor="middle" font-family="monospace">Seret layar untuk menggerakkan teko</text>
-  <rect y="84" width="160" height="26" fill="#6b4a33"/><rect y="84" width="160" height="3" fill="#b98b5c"/>
-  <rect x="40" y="88" width="80" height="12" fill="#2b2b2b"/><rect x="84" y="91" width="30" height="6" fill="#0d2b14"/>
+  <rect width="160" height="110" fill="#5a4a38"/>
+  <rect y="46" width="160" height="40" fill="#2f4a3a"/><rect y="45" width="160" height="2" fill="#b98652"/>
+  <rect x="20" y="52" width="1" height="32" fill="#243a2d"/><rect x="60" y="52" width="1" height="32" fill="#243a2d"/><rect x="100" y="52" width="1" height="32" fill="#243a2d"/><rect x="140" y="52" width="1" height="32" fill="#243a2d"/>
+  <text x="80" y="10" font-size="5" fill="#f6ecd2" opacity=".7" text-anchor="middle" font-family="monospace">Seret layar untuk menggerakkan teko</text>
+  <rect y="84" width="160" height="26" fill="#6b4328"/><rect y="84" width="160" height="3" fill="#b98652"/><rect y="84" width="160" height="1" fill="#e8d3a8"/>
+  <rect y="96" width="160" height="1" fill="#3b2416"/><rect y="104" width="160" height="1" fill="#3b2416"/>
+  <rect x="40" y="88" width="80" height="12" fill="#3b3f45"/><rect x="40" y="88" width="80" height="1" fill="#596068"/><rect x="84" y="91" width="30" height="6" fill="#0d2b14"/><rect x="84" y="91" width="30" height="1" fill="#000"/>
   <text id="sc" x="99" y="96" font-size="5" fill="#8be08b" text-anchor="middle" font-family="monospace">0.0 g</text>
-  <rect x="44" y="84" width="72" height="4" fill="#c9ced2" opacity="0"/>
-  <rect x="56" y="60" width="48" height="24" fill="#d8ecee" opacity=".35"/><rect id="cf" x="57" y="84" width="46" height="0" fill="#5a3320"/>
-  <rect x="66" y="50" width="28" height="10" fill="#d8ecee" opacity=".35"/>
-  <polygon points="46,34 114,34 94,52 66,52" fill="#f1efe8"/><rect x="44" y="32" width="72" height="3" fill="#d9d3c4"/>
+  <rect x="44" y="84" width="72" height="4" fill="#c3cad0"/><rect x="44" y="84" width="72" height="1" fill="#fff" opacity=".6"/>
+  <rect x="56" y="60" width="48" height="24" fill="#bcd9d6" opacity=".35"/><rect id="cf" x="57" y="84" width="46" height="0" fill="#4a2c1a"/>
+  <rect x="56" y="60" width="2" height="24" fill="#fff" opacity=".35"/><rect x="103" y="60" width="1" height="24" fill="#1a110c" opacity=".5"/>
+  <rect x="66" y="50" width="28" height="10" fill="#bcd9d6" opacity=".35"/>
+  <polygon points="46,34 114,34 94,52 66,52" fill="#e8d3a8"/><polygon points="46,34 58,34 72,52 66,52" fill="#f6ecd2"/><polygon points="102,34 114,34 94,52 88,52" fill="#b98652" opacity=".6"/>
+  <rect x="44" y="32" width="72" height="3" fill="#f6ecd2"/><rect x="44" y="34" width="72" height="1" fill="#b98652"/>
   <polygon id="bed" points="54,36 106,36 92,50 68,50" fill="#8a6a46"/>
   <rect x="66" y="29" width="28" height="2" fill="#f0b24a"/>
-  <rect id="st" width="2" fill="#7ec8ff" style="display:none"/>
-  <g id="kt" fill="#8b949c" transform="translate(80,22)"><rect x="0" y="0" width="3" height="3"/><rect x="2" y="-3" width="3" height="4"/><rect x="4" y="-6" width="3" height="4"/><rect x="6" y="-8" width="3" height="10"/><rect x="8" y="-6" width="26" height="22"/><rect x="12" y="-10" width="18" height="4" fill="#aab2b9"/><rect x="19" y="-13" width="4" height="3" fill="#2b2b2b"/><rect x="34" y="-4" width="6" height="16" fill="#2b2b2b"/></g>
+  <rect id="st" width="2" fill="#9fd6ff" style="display:none"/>
+  <g id="kt" fill="#8b949c" transform="translate(80,22)"><rect x="0" y="0" width="3" height="3"/><rect x="2" y="-3" width="3" height="4"/><rect x="4" y="-6" width="3" height="4"/><rect x="6" y="-8" width="3" height="10"/><rect x="8" y="-6" width="26" height="22"/><rect x="9" y="-5" width="3" height="20" fill="#c3cad0"/><rect x="31" y="-5" width="3" height="20" fill="#596068"/><rect x="8" y="3" width="26" height="2" fill="#b98652"/><rect x="12" y="-10" width="18" height="4" fill="#c3cad0"/><rect x="19" y="-13" width="4" height="3" fill="#3b2416"/><rect x="34" y="-4" width="6" height="16" fill="#3b2416"/></g>
  </svg>
  <div id="stg"></div>
  <div class="ctl">
@@ -100,6 +101,85 @@ input[type=range]{width:100%;height:34px;accent-color:#f0b24a}
 const $=id=>document.getElementById(id);
 const cl=(v,a=0,b=100)=>Math.max(a,Math.min(b,v));
 const fmt=t=>Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0');
+
+// ===== Pixel art: sprite digambar dari teks (satu huruf = satu piksel warna) =====
+const PAL={k:'#1a110c',d:'#3b2416',b:'#6b4328',m:'#8f5e36',l:'#b98652',c:'#e8d3a8',w:'#f6ecd2',g:'#2f4a3a',G:'#4f7a55',h:'#7fa56a',a:'#f0b24a',A:'#ffd98a',s:'#8b949c',S:'#c3cad0',t:'#596068',r:'#a8452f',n:'#4a2c1a',e:'#bcd9d6',E:'#f4fffd',o:'#e0b48a',p:'#d98a6c'};
+function spr(rows,x,y){let o='';rows.forEach((r,j)=>{let i=0;while(i<r.length){const c=r[i];if(c==='.'||!PAL[c]){i++;continue}let k=i;while(k<r.length&&r[k]===c)k++;o+=`<rect x="${x+i}" y="${y+j}" width="${k-i}" height="1" fill="${PAL[c]}"/>`;i=k}});return o}
+const rnd=seed=>()=>(seed=(seed*16807)%2147483647)/2147483647;
+const R_=(x,y,w,h,f,op)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${f}"${op?` opacity="${op}"`:''}/>`;
+const OO='k'+'o'.repeat(12)+'k';
+const HEAD=['..kkkkkkkkkk..','.kddddddddddk.','kddbddddddbddk','k'+'d'.repeat(12)+'k','kdooddddddoodk','kd'+'o'.repeat(10)+'dk',OO,OO,OO,OO,OO,'.k'+'o'.repeat(10)+'k.','..k'+'o'.repeat(8)+'k..','...'+'k'.repeat(8)+'...'];
+const JAR=['..kkkkkk..','.kmmmmmmk.','.kddddddk.','kEeeeeeeek','kEeeeeeeek','kEeennneek','kEnnnnnnek','kEnbnnnbnk','kEnnnnnnnk','kEnnbnnnnk','kEnnnnnbnk','kEnnnnnnnk','kddddddddk','.kkkkkkkk.'];
+const GRI=['...kkkkkkkk...','..kEeeeeeeek..','..kEennnnnek..','..kEnnbnnnek..','...kEnnnnek...','...kkkkkkkk...','..kttttttttk..','.kSsssssssstk.','.kSsttttttstk.','.kSsttaAAastk.','.kSsttaaaastk.','.kSsttttttstk.','.kSsssssssstk.','.kSsssssssstk.','.kttttttttttk.','.....kttk.....','.....kttk.....','..kkkkkkkkkk..','.kddddddddddk.','.kkkkkkkkkkkk.'];
+const PLANT=['..h...h..','.hGh.hGh.','hGGGhGGGh','.hGGGGGh.','..hGGGh..','...kmk...','..kmmmk..','..kbbbk..','...kkk...'];
+const BAG=['.kkkk.','kddddk','kcccck','kcrrck','kcrrck','kcccck','kddddk','.kkkk.'];
+const CUP=['kwwwwwk','kwwwwwk','kcwwwck','.kcccck','..kkkk.'];
+
+// ===== Kamera hybrid: [x, y, lebar, tinggi] di dalam koordinat kedai 160x100 =====
+// Semua preset berasio 1.6 agar bentuk tampilan tidak berubah. Tambah preset baru di sini.
+const CAMS={shop:[0,0,160,100],jar:[0,30,64,40],gri:[8,28,64,40],wei:[22,24,80,50],drp:[44,24,64,40],ket:[78,26,64,40]};
+const CAMP={bean:'jar',grind:'gri',weigh:'wei',prep:'drp',temp:'ket'};   // kamera otomatis per langkah
+let cam=CAMS.shop.slice(),peek=null,home=false,bubTxt='';
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+const camName=()=>peek||(home?'shop':CAMP[S.ph])||'shop';
+function sceneLoop(){
+ const n=camName(),t=CAMS[n],k=reduce?1:.12;
+ for(let i=0;i<4;i++)cam[i]+=(t[i]-cam[i])*k;
+ $('scn').setAttribute('viewBox',cam.map(v=>v.toFixed(2)).join(' '));
+ $('bub').style.display=(n==='shop'&&bubTxt)?'':'none';
+ $('home').style.display=n==='shop'?'none':'';
+ requestAnimationFrame(sceneLoop);
+}
+// Ketuk peralatan = zoom; ketuk lagi = kembali; ketuk bagian lain = lihat seluruh kedai
+$('scn').onclick=e=>{const g=e.target.closest&&e.target.closest('[data-eq]');
+ if(g){const n=g.getAttribute('data-eq');peek=camName()===n?null:n;home=false}else{peek=null;home=true}};
+
+function buildScene(){
+ const r=R_,R=rnd(7);let o='';
+ o+=`<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9a45a"/><stop offset=".55" stop-color="#d98a6c"/><stop offset="1" stop-color="#5b7f86"/></linearGradient><radialGradient id="lg"><stop offset="0" stop-color="#ffd98a" stop-opacity=".5"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient><radialGradient id="vg" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#120a06" stop-opacity=".55"/></radialGradient></defs>`;
+ // dinding plester + tekstur
+ o+=r(0,0,160,62,'#5a4a38');
+ for(let i=0;i<90;i++)o+=r(R()*158|0,R()*32|0,1+(R()*2|0),1,R()<.5?'#4c3d2e':'#6a5842');
+ // lambris kayu hijau gelap + rel
+ o+=r(0,34,160,28,'#2f4a3a');
+ for(let x=0;x<160;x+=8)o+=r(x,36,1,26,'#243a2d')+r(x+1,36,1,26,'#3b5c47');
+ o+=r(0,33,160,2,'#b98652')+r(0,33,160,1,'#e8d3a8')+r(0,35,160,1,'#3b2416');
+ // jendela senja
+ o+=r(58,6,40,24,'#3b2416')+r(60,8,36,20,'url(#sky)')+r(68,19,10,3,'#ffd98a')+r(70,17,6,2,'#ffd98a','.8')+r(60,24,14,4,'#2f4a3a')+r(74,22,22,6,'#243a2d');
+ o+=r(77,8,2,20,'#6b4328')+r(60,17,36,2,'#6b4328')+r(77,8,1,20,'#8f5e36')+r(56,30,44,3,'#b98652')+r(56,30,44,1,'#e8d3a8')+r(56,33,44,1,'#3b2416');
+ o+=`<g class="sway">${spr(PLANT,61,21)}</g>`;
+ // papan menu kapur
+ o+=r(102,8,22,15,'#3b2416')+r(104,10,18,11,'#1f2a24')+r(105,12,9,1,'#f6ecd2')+r(105,15,13,1,'#f6ecd2','.8')+r(105,18,6,1,'#f6ecd2','.8')+r(116,17,4,3,'#f6ecd2','.7');
+ // rak dengan kemasan kopi dan cangkir
+ o+=r(4,14,32,2,'#b98652')+r(4,14,32,1,'#e8d3a8')+r(4,16,32,1,'#1a110c','.4');
+ [6,14,22,29].forEach(x=>o+=spr(BAG,x,6));
+ o+=r(4,22,24,2,'#b98652')+r(4,22,24,1,'#e8d3a8')+r(4,24,24,1,'#1a110c','.4');
+ [6,14,21].forEach(x=>o+=spr(CUP,x,17));
+ // lampu gantung + cahaya
+ [46,140].forEach(cx=>{o+=`<circle class="lg" cx="${cx+.5}" cy="15" r="26" fill="url(#lg)" pointer-events="none"/>`+r(cx,0,1,8,'#1a110c')+r(cx-5,8,11,2,'#2f4a3a')+r(cx-7,10,15,2,'#2f4a3a')+r(cx-5,8,3,1,'#4f7a55')+r(cx-7,12,15,1,'#ffd98a')+r(cx-3,13,7,1,'#fff3c4')});
+ // pelanggan (kepala dan badan terpisah agar animasi mudah ditambah)
+ o+=`<g id="cus">${r(136,34,6,2,'#b98a62')}<g id="sh" fill="#3f6fb5"><rect x="128" y="35" width="22" height="26"/><rect x="125" y="38" width="4" height="18"/></g>`+r(128,35,2,26,'#000','.18')+r(148,35,2,26,'#000','.25')+r(135,35,8,2,'#f6ecd2','.7')+r(125,52,4,4,'#e0b48a')+`<g id="c-head" class="bob">${spr(HEAD,132,20)}`+r(136,28,2,2,'#1a110c')+r(141,28,2,2,'#1a110c')+r(136,28,1,1,'#fff')+r(141,28,1,1,'#fff')+r(134,31,2,1,'#d98a6c','.6')+r(144,31,2,1,'#d98a6c','.6')+`<g id="mo" fill="#3a1a1a"></g></g></g>`;
+ // meja kayu: permukaan, panel depan, serat
+ o+=r(0,60,160,6,'#b98652')+r(0,60,160,1,'#e8d3a8')+r(0,65,160,1,'#8f5e36');
+ for(let i=0;i<40;i++)o+=r(R()*156|0,61+(R()*3|0),2+(R()*4|0),1,'#8f5e36','.6');
+ o+=r(0,66,160,34,'#6b4328');
+ for(let x=0;x<160;x+=10)o+=r(x,66,1,34,'#3b2416','.55')+r(x+1,66,1,34,'#8f5e36','.7');
+ for(let i=0;i<70;i++)o+=r(R()*156|0,68+(R()*30|0),2+(R()*4|0),1,R()<.5?'#5a3a22':'#7d5230');
+ o+=r(0,66,160,2,'#1a110c','.4')+r(0,96,160,4,'#1a110c','.35');
+ // peralatan (tiap grup bisa diketuk untuk zoom)
+ o+=`<g id="g-jar" data-eq="jar">${r(4,60,13,1,'#1a110c','.35')}${spr(JAR,5,46)}<rect class="ol" x="3" y="44" width="14" height="17"/></g>`;
+ o+=`<g id="g-gri" data-eq="gri">${r(29,60,17,1,'#1a110c','.35')}${spr(GRI,30,40)}<rect class="ol" x="28" y="38" width="18" height="23"/></g>`;
+ o+=spr(CUP,47,55);
+ o+=`<g id="g-scl" data-eq="wei">${r(56,57,38,4,'#3b3f45')+r(56,57,38,1,'#596068')+r(58,54,34,3,'#c3cad0')+r(58,54,34,1,'#fff','.6')+r(80,58,12,2,'#0d2b14')+r(82,58,8,1,'#8be08b')+r(55,61,40,1,'#1a110c','.35')}<rect class="ol" x="54" y="52" width="42" height="10"/></g>`;
+ let cone='';for(let i=0;i<10;i++)cone+=r(63+i,32+i,24-2*i,1,i%3===2?'#d9c08f':'#e8d3a8')+r(63+i,32+i,1,1,'#1a110c')+r(86-i,32+i,1,1,'#1a110c')+r(64+i,32+i,1,1,'#fff')+r(85-i,32+i,1,1,'#b98652');
+ o+=`<g id="g-drp" data-eq="drp">${r(65,43,20,11,'#bcd9d6','.55')}${r(66,50,18,4,'#4a2c1a')}${r(66,43,1,10,'#fff','.55')}${r(65,53,20,1,'#1a110c','.5')}${r(85,45,2,7,'#3b2416')}${cone}${r(62,31,26,2,'#f6ecd2')}${r(66,33,18,2,'#4a2c1a')}<rect class="ol" x="60" y="29" width="30" height="26"/></g>`;
+ o+=`<g id="g-ket" data-eq="ket">${r(97,60,25,1,'#1a110c','.35')}${r(100,42,16,18,'#8b949c')}${r(101,43,2,16,'#c3cad0')}${r(114,43,2,16,'#596068')}${r(100,50,16,2,'#b98652')}${r(102,39,12,3,'#c3cad0')}${r(106,36,4,3,'#3b2416')}${r(116,42,5,2,'#3b2416')}${r(119,42,2,12,'#3b2416')}${r(116,52,5,2,'#3b2416')}${r(98,56,3,2,'#8b949c')}${r(96,50,3,7,'#8b949c')}${r(95,46,3,5,'#8b949c')}${r(93,44,4,3,'#8b949c')}${r(96,50,1,7,'#c3cad0')}<rect class="ol" x="91" y="34" width="32" height="27"/></g>`;
+ o+=`<g class="stm" pointer-events="none">${r(93,41,2,2,'#f6ecd2')}${r(95,41,2,2,'#f6ecd2')}${r(92,41,2,2,'#f6ecd2')}</g>`;
+ // sorot cahaya jendela dan vinyet
+ o+=`<polygon class="beam" points="62,28 94,28 132,62 84,62" fill="#ffd98a" opacity=".1" pointer-events="none"/><rect width="160" height="100" fill="url(#vg)" pointer-events="none"/>`;
+ $('scn').innerHTML=o;
+}
+const MOUTH=['<rect x="137" y="32" width="6" height="1"/>','<rect x="136" y="31" width="1" height="1"/><rect x="137" y="32" width="6" height="1"/><rect x="143" y="31" width="1" height="1"/>','<rect x="136" y="33" width="1" height="1"/><rect x="137" y="32" width="6" height="1"/><rect x="143" y="33" width="1" height="1"/>'];
 
 // ===== Simpanan (localStorage): uang, reputasi, jumlah pelanggan =====
 const KEY='barista-life-v1';
@@ -117,7 +197,6 @@ const SH=['#3f6fb5','#b5533f','#5a9a5a','#8b5fb5','#d9a441'];
 const PH=['order','bean','grind','weigh','prep','temp','brew','result','served'];
 const TTL=['Pesanan masuk','Pilih biji kopi','Atur gilingan','Giling dan timbang','Siapkan V60','Atur suhu air','Seduh V60','Hasil seduhan','Disajikan'];
 const HL={bean:['jar'],grind:['gri'],weigh:['gri','scl'],prep:['drp'],temp:['ket'],brew:['drp','ket']};
-const MOUTH=['<rect x="137" y="32" width="6" height="1"/>','<rect x="136" y="31" width="1" height="1"/><rect x="137" y="32" width="6" height="1"/><rect x="143" y="31" width="1" height="1"/>','<rect x="136" y="33" width="1" height="1"/><rect x="137" y="32" width="6" height="1"/><rect x="143" y="33" width="1" height="1"/>'];
 const CM=['Hmm... kurang enak.','Lumayan, tapi bisa lebih baik.','Enak kok, terima kasih!','Wah, enak banget!','Luar biasa! Aku pasti balik lagi!'];
 const HINT=['Bloom: tuang pelan sampai 40 g, lalu tunggu sekitar 30 detik.','Tuang pelan sampai 120 g. Jaga teko di zona kuning.','Lanjut tuang sampai 180 g.','Tuang terakhir sampai 225 g, lalu hentikan.','Semua target tercapai. Tekan Selesai seduh.'];
 
@@ -125,21 +204,20 @@ const HINT=['Bloom: tuang pelan sampai 40 g, lalu tunggu sekitar 30 detik.','Tua
 let S,B,view=false,raf=0,last=0,hold=null,drag=false,lastUi='';
 function newOrder(){S={ph:'idle',bean:null,grind:5,grams:0,prep:0,temp:93,res:null,mood:0,shirt:SH[Math.random()*SH.length|0]};resetBrew()}
 function resetBrew(){B={water:0,dr:0,spill:0,spillT:0,t:0,started:false,pour:false,flow:5,stage:0,over:0,off:0,offN:0,harsh:0,early:false,bloomAt:null,kx:80,ky:22}}
-function go(ph){stopHold();S.ph=ph;if(ph==='brew'){resetBrew();render();openBrew()}else render()}
+function go(ph){stopHold();peek=null;home=false;S.ph=ph;if(ph==='brew'){resetBrew();render();openBrew()}else render()}
 
 // ===== Tampilan utama =====
 function render(){
  stopHold();
  $('money').textContent='Rp '+save.money.toLocaleString('id-ID');
  $('rep').textContent='★ '+save.rep;
- const on=S.ph!=='idle';
- $('cus').style.display=on?'':'none';
+ $('cus').style.display=S.ph!=='idle'?'':'none';
  $('sh').setAttribute('fill',S.shirt);
  $('mo').innerHTML=MOUTH[S.mood];
  const h=HL[S.ph]||[];
  ['jar','gri','scl','drp','ket'].forEach(i=>$('g-'+i).classList.toggle('hl',h.includes(i)));
- const say=S.ph==='order'?'Halo! Satu V60, ya!':S.ph==='served'?S.comment:'';
- $('bub').style.display=say?'':'none';$('bub').textContent=say;
+ bubTxt=S.ph==='order'?'Halo! Satu V60, ya!':S.ph==='served'?S.comment:'';
+ $('bub').textContent=bubTxt;
  $('pn').innerHTML=panel();
 }
 function panel(){
@@ -156,9 +234,9 @@ function panel(){
   return `${hd}<p>Lakukan berurutan:</p>`+P.map((t,i)=>`<button class="b s" ${i!==S.prep?'disabled':''} onclick="S.prep++;render()">${i<S.prep?'✓ ':''}${t}</button>`).join('')+(S.prep>=3?`<button class="b" onclick="go('temp')">Lanjut</button>`:'')+`<button class="b s" onclick="go('weigh')">Kembali</button>`}
  case 'temp':return `${hd}<p>Suhu air untuk <b>${bn.n}</b>. Saran: sekitar ${bn.t}°C.</p><div class="lcd" id="tv">${S.temp}°C</div><input type="range" min="80" max="100" step="1" value="${S.temp}" oninput="S.temp=+this.value;$('tv').textContent=S.temp+'°C'"><button class="b" onclick="go('brew')">Mulai seduh</button><button class="b s" onclick="go('prep')">Kembali</button>`;
  case 'brew':return `${hd}<p>Tampilan seduh sedang ditutup. Waktu berhenti sementara.</p><button class="b" onclick="openBrew()">Buka tampilan seduh</button>`;
- case 'result':{const R=S.res;
-  const rows=[['Rasio',`1:${R.ratio.toFixed(1)}`,R.sc.ratio],['Gilingan',S.grind,R.sc.grind],['Suhu',S.temp+'°C',R.sc.temp],['Waktu',fmt(R.total),R.sc.time],['Konsistensi','',R.sc.cons]];
-  return `${hd}`+rows.map(r=>`<div class="row"><span>${r[0]}</span><span>${r[1]}</span><b>${Math.round(r[2])}</b></div>`).join('')+`<p>Rasa menurut simulasi: ${R.taste}.</p><div class="lcd">Skor ${Math.round(R.score)}</div><button class="b" onclick="serve()">Sajikan kopi</button><p><small>Penilaian ini simulasi sederhana, bukan pengukuran ekstraksi sungguhan.</small></p>`}
+ case 'result':{const Rr=S.res;
+  const rows=[['Rasio',`1:${Rr.ratio.toFixed(1)}`,Rr.sc.ratio],['Gilingan',S.grind,Rr.sc.grind],['Suhu',S.temp+'°C',Rr.sc.temp],['Waktu',fmt(Rr.total),Rr.sc.time],['Konsistensi','',Rr.sc.cons]];
+  return `${hd}`+rows.map(x=>`<div class="row"><span>${x[0]}</span><span>${x[1]}</span><b>${Math.round(x[2])}</b></div>`).join('')+`<p>Rasa menurut simulasi: ${Rr.taste}.</p><div class="lcd">Skor ${Math.round(Rr.score)}</div><button class="b" onclick="serve()">Sajikan kopi</button><p><small>Penilaian ini simulasi sederhana, bukan pengukuran ekstraksi sungguhan.</small></p>`}
  case 'served':return `${hd}<div class="stars">${'★'.repeat(S.stars)}${'☆'.repeat(5-S.stars)}</div><p>“${S.comment}”</p><p>Pendapatan: <b>Rp ${S.earn.toLocaleString('id-ID')}</b><br>Reputasi: ${S.d>=0?'+':''}${S.d}</p><button class="b" onclick="nextC()">Pelanggan berikutnya</button>`;
  }
 }
@@ -180,7 +258,7 @@ function stopPour(){if(!B.pour)return;B.pour=false;
  while(B.stage<4&&B.water>=T[B.stage]-1){B.over+=Math.min(30,Math.max(0,B.water-T[B.stage]-2));if(B.stage===0)B.bloomAt=B.t;B.stage++}
  ui()}
 function togglePour(){B.pour?stopPour():startPour()}
-function again(){stopPour();resetBrew();$('fl').value=B.flow;$('fv').B.flow.toFixed(1);lastUi='';ui();draw()}
+function again(){stopPour();resetBrew();$('fl').value=B.flow;$('fv').textContent=B.flow.toFixed(1);lastUi='';ui();draw()}
 
 function loop(ts){
  if(!view)return;
@@ -228,8 +306,8 @@ function finishBrew(){
  if(B.water<20)return;
  stopPour();
  const bn=BEANS[S.bean];
- const draw=cl(30+(5-S.grind)*6,12,70);          // gilingan halus = turun lebih lambat
- const total=B.t+draw,ratio=B.water/S.grams;
+ const dd=cl(30+(5-S.grind)*6,12,70);          // gilingan halus = turun lebih lambat
+ const total=B.t+dd,ratio=B.water/S.grams;
  const sc={
   ratio:cl(100-Math.abs(ratio-15)*18),
   grind:cl(100-Math.abs(S.grind-bn.g)*16),
@@ -243,16 +321,14 @@ function finishBrew(){
  closeBrew();go('result');
 }
 function serve(){
- const R=S.res,n=cl(Math.round(R.score/20),1,5);
- S.stars=n;S.d=n>=4?2:n===3?1:-1;S.earn=10000+Math.round(R.score)*300;
+ const Rr=S.res,n=cl(Math.round(Rr.score/20),1,5);
+ S.stars=n;S.d=n>=4?2:n===3?1:-1;S.earn=10000+Math.round(Rr.score)*300;
  save.money+=S.earn;save.rep=Math.max(0,save.rep+S.d);save.served++;persist();
  S.mood=n>=4?1:n===3?0:2;S.comment=CM[n-1];
  go('served');
 }
 
-newOrder();render();
+buildScene();newOrder();render();sceneLoop();
 </script>
 </body>
 </html>
-
-    

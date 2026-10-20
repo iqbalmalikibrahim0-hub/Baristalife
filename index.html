@@ -41,6 +41,11 @@ input[type=range]{width:100%;height:34px;accent-color:#f0b24a}
 .chip.cur{border-color:#f0b24a;color:#f0b24a}.chip.done{background:#2e5a37;border-color:#2e5a37}
 .ctl{padding:6px 10px max(10px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:6px;background:#2b2019;border-top:3px solid #000}
 .r3{display:flex;gap:6px}.r3 .b{width:auto;flex:1}
+.trk{display:flex;gap:4px}.trk i{flex:1;height:6px;background:#4b3a2d}.trk i.on{background:#f0b24a}.trk i.cur{background:#fff}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.card{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;text-align:center}.card svg{shape-rendering:crispEdges}.card small{font-size:11px;font-weight:normal}
+.two{display:flex;gap:6px}.two .b{flex:1}
+.rg{display:flex;align-items:center;gap:8px;font-size:12px}.rg input{flex:1}
+.gg{position:relative;height:14px;background:#1d1713;border:2px solid #000}.gg i{display:block;height:100%;background:#f0b24a}.gg b{position:absolute;left:50%;top:-2px;bottom:-2px;width:2px;background:#fff}
 /* Animasi tenang (mati otomatis jika pengguna memilih mengurangi gerakan) */
 @media (prefers-reduced-motion:no-preference){
  .hl .ol{animation:bl 1s steps(2) infinite}@keyframes bl{50%{opacity:.3}}
@@ -83,10 +88,12 @@ input[type=range]{width:100%;height:34px;accent-color:#f0b24a}
   <rect x="66" y="50" width="28" height="10" fill="#bcd9d6" opacity=".35"/>
   <polygon points="46,34 114,34 94,52 66,52" fill="#e8d3a8"/><polygon points="46,34 58,34 72,52 66,52" fill="#f6ecd2"/><polygon points="102,34 114,34 94,52 88,52" fill="#b98652" opacity=".6"/>
   <rect x="44" y="32" width="72" height="3" fill="#f6ecd2"/><rect x="44" y="34" width="72" height="1" fill="#b98652"/>
-  <polygon id="bed" points="54,36 106,36 92,50 68,50" fill="#8a6a46"/>
+  <polygon points="49,35 111,35 92.5,51 67.5,51" fill="#2b221b" opacity=".4"/><defs><clipPath id="cn"><polygon points="46,34 114,34 94,52 66,52"/></clipPath></defs><g clip-path="url(#cn)"><rect id="wv" x="40" y="42" width="80" height="0" fill="#6aa9d6" opacity=".75"/><polygon id="bed" points="55,42 80,42 105,42 94,52 66,52" fill="#8a6a46"/><g id="bub2" fill="#c9a977"></g></g>
   <rect x="66" y="29" width="28" height="2" fill="#f0b24a"/>
-  <rect id="st" width="2" fill="#9fd6ff" style="display:none"/>
+  <g id="drp2" fill="#5a3320"></g><rect id="pud" x="80" y="84" width="0" height="1.5" fill="#6aa9d6" opacity=".8"/><rect id="rip" width="6" height="1" fill="#cfe9ff" style="display:none"/><g id="spl" fill="#cfe9ff"></g><line id="st" stroke="#9fd6ff" stroke-width="2" style="display:none"/><line id="st2" stroke="#fff" stroke-width=".6" stroke-dasharray="2 3" opacity=".7" style="display:none"/>
   <g id="kt" fill="#8b949c" transform="translate(80,22)"><rect x="0" y="0" width="3" height="3"/><rect x="2" y="-3" width="3" height="4"/><rect x="4" y="-6" width="3" height="4"/><rect x="6" y="-8" width="3" height="10"/><rect x="8" y="-6" width="26" height="22"/><rect x="9" y="-5" width="3" height="20" fill="#c3cad0"/><rect x="31" y="-5" width="3" height="20" fill="#596068"/><rect x="8" y="3" width="26" height="2" fill="#b98652"/><rect x="12" y="-10" width="18" height="4" fill="#c3cad0"/><rect x="19" y="-13" width="4" height="3" fill="#3b2416"/><rect x="34" y="-4" width="6" height="16" fill="#3b2416"/></g>
+  <g transform="translate(5,20)"><rect width="9" height="40" fill="#1a110c" stroke="#000"/><rect x="1" y="14.5" width="7" height="18.2" fill="#2e5a37"/><rect id="fm" x="0" y="20" width="9" height="2" fill="#8be08b"/></g><text x="9.5" y="17" font-size="3.5" fill="#f6ecd2" text-anchor="middle" font-family="monospace">aliran</text>
+  <rect id="alr" x="1" y="1" width="158" height="108" fill="none" stroke="#c2412d" stroke-width="2" opacity="0" pointer-events="none"/>
  </svg>
  <div id="stg"></div>
  <div class="ctl">
@@ -117,16 +124,19 @@ const CUP=['kwwwwwk','kwwwwwk','kcwwwck','.kcccck','..kkkk.'];
 
 // ===== Kamera hybrid: [x, y, lebar, tinggi] di dalam koordinat kedai 160x100 =====
 // Semua preset berasio 1.6 agar bentuk tampilan tidak berubah. Tambah preset baru di sini.
-const CAMS={shop:[0,0,160,100],jar:[0,30,64,40],gri:[8,28,64,40],wei:[22,24,80,50],drp:[44,24,64,40],ket:[78,26,64,40]};
+const CAMS={shop:[0,0,160,100],jar:[0,30,64,40],gri:[8,24,64,40],wei:[22,22,80,50],drp:[44,24,64,40],ket:[78,26,64,40]};
 const CAMP={bean:'jar',grind:'gri',weigh:'wei',prep:'drp',temp:'ket'};   // kamera otomatis per langkah
 let cam=CAMS.shop.slice(),peek=null,home=false,bubTxt='';
 const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
 const camName=()=>peek||(home?'shop':CAMP[S.ph])||'shop';
-function sceneLoop(){
+function sceneLoop(ts){
+ const dt=cl((ts-tPrev)/1000,0,.1);tPrev=ts;
  const n=camName(),t=CAMS[n],k=reduce?1:.12;
  for(let i=0;i<4;i++)cam[i]+=(t[i]-cam[i])*k;
  $('scn').setAttribute('viewBox',cam.map(v=>v.toFixed(2)).join(' '));
- $('bub').style.display=(n==='shop'&&bubTxt)?'':'none';
+ if(!view){custFrame(dt);grindFx(dt)}
+ const sb=(S.ph==='order'&&cs==='wait')||(S.ph==='served'&&cs==='sip'&&csT>1.2);
+ $('bub').style.display=(n==='shop'&&bubTxt&&sb)?'':'none';
  $('home').style.display=n==='shop'?'none':'';
  requestAnimationFrame(sceneLoop);
 }
@@ -158,7 +168,7 @@ function buildScene(){
  // lampu gantung + cahaya
  [46,140].forEach(cx=>{o+=`<circle class="lg" cx="${cx+.5}" cy="15" r="26" fill="url(#lg)" pointer-events="none"/>`+r(cx,0,1,8,'#1a110c')+r(cx-5,8,11,2,'#2f4a3a')+r(cx-7,10,15,2,'#2f4a3a')+r(cx-5,8,3,1,'#4f7a55')+r(cx-7,12,15,1,'#ffd98a')+r(cx-3,13,7,1,'#fff3c4')});
  // pelanggan (kepala dan badan terpisah agar animasi mudah ditambah)
- o+=`<g id="cus">${r(136,34,6,2,'#b98a62')}<g id="sh" fill="#3f6fb5"><rect x="128" y="35" width="22" height="26"/><rect x="125" y="38" width="4" height="18"/></g>`+r(128,35,2,26,'#000','.18')+r(148,35,2,26,'#000','.25')+r(135,35,8,2,'#f6ecd2','.7')+r(125,52,4,4,'#e0b48a')+`<g id="c-head" class="bob">${spr(HEAD,132,20)}`+r(136,28,2,2,'#1a110c')+r(141,28,2,2,'#1a110c')+r(136,28,1,1,'#fff')+r(141,28,1,1,'#fff')+r(134,31,2,1,'#d98a6c','.6')+r(144,31,2,1,'#d98a6c','.6')+`<g id="mo" fill="#3a1a1a"></g></g></g>`;
+  o+=`<g id="cus" style="display:none">${r(136,34,6,2,'#b98a62')}<g id="sh" fill="#3f6fb5"><rect x="128" y="35" width="22" height="26"/></g>`+r(128,35,2,26,'#000','.18')+r(148,35,2,26,'#000','.25')+r(135,35,8,2,'#f6ecd2','.7')+`<g id="c-head">${spr(HEAD,132,20)}<g id="eyes">`+r(136,28,2,2,'#1a110c')+r(141,28,2,2,'#1a110c')+r(136,28,1,1,'#fff')+r(141,28,1,1,'#fff')+`</g><g id="lids" style="display:none">`+r(136,29,2,1,'#3b2416')+r(141,29,2,1,'#3b2416')+`</g>`+r(134,31,2,1,'#d98a6c','.6')+r(144,31,2,1,'#d98a6c','.6')+`<g id="mo" fill="#3a1a1a"></g></g><g id="c-arm"><g id="sh2" fill="#3f6fb5"><rect x="125" y="38" width="4" height="14"/></g><rect x="125" y="52" width="4" height="4" fill="#e0b48a"/></g><g id="c-cup" style="display:none">${spr(CUP,0,0)}<g class="stm">${r(2,-3,1,2,'#f6ecd2')}${r(4,-3,1,2,'#f6ecd2')}${r(3,-3,1,2,'#f6ecd2')}</g></g></g>`;
  // meja kayu: permukaan, panel depan, serat
  o+=r(0,60,160,6,'#b98652')+r(0,60,160,1,'#e8d3a8')+r(0,65,160,1,'#8f5e36');
  for(let i=0;i<40;i++)o+=r(R()*156|0,61+(R()*3|0),2+(R()*4|0),1,'#8f5e36','.6');
@@ -168,18 +178,60 @@ function buildScene(){
  o+=r(0,66,160,2,'#1a110c','.4')+r(0,96,160,4,'#1a110c','.35');
  // peralatan (tiap grup bisa diketuk untuk zoom)
  o+=`<g id="g-jar" data-eq="jar">${r(4,60,13,1,'#1a110c','.35')}${spr(JAR,5,46)}<rect class="ol" x="3" y="44" width="14" height="17"/></g>`;
- o+=`<g id="g-gri" data-eq="gri">${r(29,60,17,1,'#1a110c','.35')}${spr(GRI,30,40)}<rect class="ol" x="28" y="38" width="18" height="23"/></g>`;
+  o+=`<g id="g-gri" data-eq="gri">${r(29,60,17,1,'#1a110c','.35')}${r(30,48,2,12,'#6b4328')+r(42,48,2,12,'#6b4328')+r(30,48,1,12,'#b98652')+r(42,48,1,12,'#b98652')}<g id="gri-m">${spr(GRI,30,28)}<rect id="gdial" x="36" y="39" width="1" height="1" fill="#ffd98a"/><rect id="gled" x="41" y="36" width="1" height="1" fill="#3b2416"/></g>${r(32,58,10,2,'#3b3f45')+r(32,57,10,1,'#c3cad0')}<text id="mgl" x="37" y="59.4" font-size="2.2" fill="#8be08b" text-anchor="middle" font-family="monospace">0.0</text>${r(33,52,7,5,'#8b949c')+r(34,52,5,4,'#2b2420')+r(33,52,1,5,'#c3cad0')}<rect id="gnd" x="34" y="56" width="5" height="0" fill="#4a2c1a"/><g id="gpt" fill="#5a3320"></g><rect class="ol" x="28" y="26" width="18" height="35"/></g>`;
  o+=spr(CUP,47,55);
  o+=`<g id="g-scl" data-eq="wei">${r(56,57,38,4,'#3b3f45')+r(56,57,38,1,'#596068')+r(58,54,34,3,'#c3cad0')+r(58,54,34,1,'#fff','.6')+r(80,58,12,2,'#0d2b14')+r(82,58,8,1,'#8be08b')+r(55,61,40,1,'#1a110c','.35')}<rect class="ol" x="54" y="52" width="42" height="10"/></g>`;
  let cone='';for(let i=0;i<10;i++)cone+=r(63+i,32+i,24-2*i,1,i%3===2?'#d9c08f':'#e8d3a8')+r(63+i,32+i,1,1,'#1a110c')+r(86-i,32+i,1,1,'#1a110c')+r(64+i,32+i,1,1,'#fff')+r(85-i,32+i,1,1,'#b98652');
- o+=`<g id="g-drp" data-eq="drp">${r(65,43,20,11,'#bcd9d6','.55')}${r(66,50,18,4,'#4a2c1a')}${r(66,43,1,10,'#fff','.55')}${r(65,53,20,1,'#1a110c','.5')}${r(85,45,2,7,'#3b2416')}${cone}${r(62,31,26,2,'#f6ecd2')}${r(66,33,18,2,'#4a2c1a')}<rect class="ol" x="60" y="29" width="30" height="26"/></g>`;
+ o+=`<g id="g-drp" data-eq="drp">${r(65,43,20,11,'#bcd9d6','.55')}${r(66,50,18,4,'#4a2c1a')}${r(66,43,1,10,'#fff','.55')}${r(65,53,20,1,'#1a110c','.5')}${r(85,45,2,7,'#3b2416')}<g id="d-cone">${cone}${r(62,31,26,2,'#f6ecd2')}</g><g id="d-flt">${r(65,32,20,1,'#fff')+r(66,33,18,1,'#e8d3a8')}</g><g id="d-grd">${r(66,33,18,2,'#4a2c1a')}</g><rect class="ol" x="60" y="29" width="30" height="26"/></g>`;
  o+=`<g id="g-ket" data-eq="ket">${r(97,60,25,1,'#1a110c','.35')}${r(100,42,16,18,'#8b949c')}${r(101,43,2,16,'#c3cad0')}${r(114,43,2,16,'#596068')}${r(100,50,16,2,'#b98652')}${r(102,39,12,3,'#c3cad0')}${r(106,36,4,3,'#3b2416')}${r(116,42,5,2,'#3b2416')}${r(119,42,2,12,'#3b2416')}${r(116,52,5,2,'#3b2416')}${r(98,56,3,2,'#8b949c')}${r(96,50,3,7,'#8b949c')}${r(95,46,3,5,'#8b949c')}${r(93,44,4,3,'#8b949c')}${r(96,50,1,7,'#c3cad0')}<rect class="ol" x="91" y="34" width="32" height="27"/></g>`;
- o+=`<g class="stm" pointer-events="none">${r(93,41,2,2,'#f6ecd2')}${r(95,41,2,2,'#f6ecd2')}${r(92,41,2,2,'#f6ecd2')}</g>`;
+ o+=`<g class="stm" id="stmg" pointer-events="none">${r(93,41,2,2,'#f6ecd2')}${r(95,41,2,2,'#f6ecd2')}${r(92,41,2,2,'#f6ecd2')}</g>`;
  // sorot cahaya jendela dan vinyet
  o+=`<polygon class="beam" points="62,28 94,28 132,62 84,62" fill="#ffd98a" opacity=".1" pointer-events="none"/><rect width="160" height="100" fill="url(#vg)" pointer-events="none"/>`;
  $('scn').innerHTML=o;
 }
 const MOUTH=['<rect x="137" y="32" width="6" height="1"/>','<rect x="136" y="31" width="1" height="1"/><rect x="137" y="32" width="6" height="1"/><rect x="143" y="31" width="1" height="1"/>','<rect x="136" y="33" width="1" height="1"/><rect x="137" y="32" width="6" height="1"/><rect x="143" y="33" width="1" height="1"/>'];
+
+// ===== Pelanggan hidup: out > enter > wait > take > sip > leave =====
+let cs='out',csT=0,tPrev=0,lt=0,leaving=false,mCache=-1,gp=[],gAcc=0,gS='';
+const setCs=x=>{cs=x;csT=0};
+function custFrame(dt){
+ csT+=dt;const c=$('cus');
+ if(cs==='out'){c.style.display='none';return}
+ c.style.display='';
+ let ox=0,by=Math.round(Math.sin(csT*2)*.8),arm=0,cx=124,cy=53,cup=false,mo=0,gl=[0,1,0,-1][Math.floor(csT/1.7)%4],bl=Math.floor(csT*10)%37===0;
+ if(cs==='enter'){const k=Math.min(1,csT/1.3);ox=(1-k)*(1-k)*46;by=-Math.round(Math.abs(Math.sin(csT*11))*1.2);gl=0;if(k>=1)setCs('wait')}
+ else if(cs==='leave'){const k=Math.min(1,csT/.8);ox=k*k*46;by=-Math.round(Math.abs(Math.sin(csT*11))*1.2);gl=0;if(k>=1)setCs('out')}
+ else if(cs==='wait'){if(csT>25){mo=2;arm=Math.max(0,Math.sin(csT*6))*10}}
+ else{cup=true;
+  if(cs==='take'){const k=Math.min(1,csT/.5);cx=112+12*k;if(csT>.5)arm=115*Math.min(1,(csT-.5)/.9);if(csT>1.4)setCs('sip')}
+  else arm=115+Math.sin(csT*2.6)*5;
+  if(arm>0){const a=arm*Math.PI/180;cx=127+17*Math.sin(a)-3;cy=38+17*Math.cos(a)-2}
+  if(cs==='sip'&&csT>1.2)mo=S.mood}
+ if(mo!==mCache){mCache=mo;$('mo').innerHTML=MOUTH[mo]}
+ c.setAttribute('transform',`translate(${ox.toFixed(1)},0)`);
+ $('c-head').setAttribute('transform',`translate(0,${by})`);
+ $('eyes').style.display=bl?'none':'';$('lids').style.display=bl?'':'none';
+ $('eyes').setAttribute('transform',`translate(${gl},0)`);
+ $('c-arm').setAttribute('transform',`rotate(${(-arm).toFixed(1)},127,38)`);
+ const cp=$('c-cup');cp.style.display=cup?'':'none';cp.setAttribute('transform',`translate(${cx.toFixed(1)},${cy.toFixed(1)})`);
+}
+// ===== Penggiling: getar, LED, bubuk jatuh, tumpukan di cangkir =====
+function grindFx(dt){
+ const on=hold!==null&&S.ph==='weigh';
+ $('gri-m').setAttribute('transform',on?`translate(${Math.random()<.5?-.5:.5},0)`:'');
+ $('gled').setAttribute('fill',on?'#ff6a3d':'#3b2416');
+ const show=S.ph==='weigh'||(S.ph==='prep'&&S.prep<3),g=show?S.grams:0,h=cl(g/15*3.2,0,4);
+ $('gnd').setAttribute('y',56-h);$('gnd').setAttribute('height',h);$('mgl').textContent=g.toFixed(1);
+ if(on){gAcc+=dt*30;while(gAcc>=1){gAcc--;gp.push({x:35.5+Math.random()*2,y:48,v:22+Math.random()*10})}}
+ let s='';for(let i=gp.length-1;i>=0;i--){const p=gp[i];p.y+=p.v*dt;if(p.y>=56-h)gp.splice(i,1);else s+=`<rect x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" width="1" height="1"/>`}
+ if(s||gS)$('gpt').innerHTML=s;gS=s;
+}
+function mix(a,b,t){const p=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));const x=p(a),y=p(b);return '#'+x.map((v,i)=>Math.round(v+(y[i]-v)*t).toString(16).padStart(2,'0')).join('')}
+const stm=()=>{const e=$('stmg');if(e)e.setAttribute('opacity',(.3+(S.temp-80)/20*.9).toFixed(2))};
+function dripLvl(){const i=PH.indexOf(S.ph),l=S.ph==='prep'?S.prep:i>PH.indexOf('prep')?3:1;
+ $('d-cone').style.display=l>=1?'':'none';$('d-flt').style.display=l>=2?'':'none';$('d-grd').style.display=l>=3?'':'none'}
+function gpv(){const R=rnd(3);let s='';for(let i=0;i<34;i++){const z=Math.max(.7,S.grind*.3+R()*S.grind*.15).toFixed(1);s+=R_(R()*46|0,R()*8|0,z,z,R()<.5?'#4a2c1a':'#6b4328')}return s}
+function updG(){$('gpv').innerHTML=gpv();$('gdial').setAttribute('x',34+Math.round((S.grind-1)*5/9))}
 
 // ===== Simpanan (localStorage): uang, reputasi, jumlah pelanggan =====
 const KEY='barista-life-v1';
@@ -189,9 +241,9 @@ const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}
 
 // ===== Data game =====
 const BEANS=[
- {n:'Ethiopia Yirgacheffe',d:'Wangi bunga, sangrai terang',g:4,t:94},
- {n:'Kenya AA',d:'Segar, buah merah, sangrai sedang',g:5,t:93},
- {n:'Brasil Santos',d:'Cokelat dan kacang, sangrai gelap',g:6,t:90}];
+ {n:'Ethiopia Yirgacheffe',r:'Sangrai terang',c:'#d9a441',g:4,t:94},
+ {n:'Kenya AA',r:'Sangrai sedang',c:'#a8623a',g:5,t:93},
+ {n:'Brasil Santos',r:'Sangrai gelap',c:'#3b2416',g:6,t:90}];
 const T=[40,120,180,225];            // target air kumulatif (resep contoh)
 const SH=['#3f6fb5','#b5533f','#5a9a5a','#8b5fb5','#d9a441'];
 const PH=['order','bean','grind','weigh','prep','temp','brew','result','served'];
@@ -204,16 +256,16 @@ const HINT=['Bloom: tuang pelan sampai 40 g, lalu tunggu sekitar 30 detik.','Tua
 let S,B,view=false,raf=0,last=0,hold=null,drag=false,lastUi='';
 function newOrder(){S={ph:'idle',bean:null,grind:5,grams:0,prep:0,temp:93,res:null,mood:0,shirt:SH[Math.random()*SH.length|0]};resetBrew()}
 function resetBrew(){B={water:0,dr:0,spill:0,spillT:0,t:0,started:false,pour:false,flow:5,stage:0,over:0,off:0,offN:0,harsh:0,early:false,bloomAt:null,kx:80,ky:22}}
-function go(ph){stopHold();peek=null;home=false;S.ph=ph;if(ph==='brew'){resetBrew();render();openBrew()}else render()}
+function go(ph){stopHold();peek=null;home=false;S.ph=ph;if(ph==='order')setCs('enter');if(ph==='brew'){resetBrew();render();openBrew()}else render()}
 
 // ===== Tampilan utama =====
 function render(){
  stopHold();
  $('money').textContent='Rp '+save.money.toLocaleString('id-ID');
  $('rep').textContent='★ '+save.rep;
- $('cus').style.display=S.ph!=='idle'?'':'none';
- $('sh').setAttribute('fill',S.shirt);
- $('mo').innerHTML=MOUTH[S.mood];
+ 
+ $('sh').setAttribute('fill',S.shirt);$('sh2').setAttribute('fill',S.shirt);
+ dripLvl();$('gdial').setAttribute('x',34+Math.round((S.grind-1)*5/9));stm();
  const h=HL[S.ph]||[];
  ['jar','gri','scl','drp','ket'].forEach(i=>$('g-'+i).classList.toggle('hl',h.includes(i)));
  bubTxt=S.ph==='order'?'Halo! Satu V60, ya!':S.ph==='served'?S.comment:'';
@@ -221,33 +273,33 @@ function render(){
  $('pn').innerHTML=panel();
 }
 function panel(){
- const n=PH.indexOf(S.ph)+1;
- const hd=n?`<h2>Langkah ${n}/9 — ${TTL[n-1]}</h2>`:'';
- const bn=S.bean!==null?BEANS[S.bean]:null;
+ const i=PH.indexOf(S.ph),bn=S.bean!==null?BEANS[S.bean]:null;
+ const hd=i<0?'<h2>Kedai buka</h2>':`<div class="trk">${PH.map((p,j)=>`<i class="${j<i?'on':j===i?'cur':''}"></i>`).join('')}</div><h2>${TTL[i]}</h2>`;
+ const bk=ph=>`<button class="b s sm" onclick="go('${ph}')">← Kembali</button>`;
  switch(S.ph){
- case 'idle':return `<h2>Kedai sudah buka</h2><p>Belum ada pelanggan. Siap melayani?</p><button class="b" onclick="go('order')">Panggil pelanggan</button><button class="b s" onclick="wipe()">Hapus data simpanan</button>`;
- case 'order':return `${hd}<p>Pelanggan memesan <b>1 V60</b>. Resep contoh: 15 g kopi dan 225 g air.</p><button class="b" onclick="go('bean')">Terima pesanan</button>`;
- case 'bean':return `${hd}<p>Pilih biji untuk V60 ini:</p>`+BEANS.map((b,i)=>`<button class="b s" onclick="S.bean=${i};go('grind')"><b>${b.n}</b><br><small>${b.d}</small></button>`).join('');
- case 'grind':return `${hd}<p>Biji: <b>${bn.n}</b>. Geser: 1 = sangat halus, 10 = kasar.</p><div class="lcd" id="gv">${S.grind}</div><input type="range" min="1" max="10" step="1" value="${S.grind}" oninput="S.grind=+this.value;$('gv').textContent=S.grind"><p><small>Saran untuk biji ini: sekitar ${bn.g}.</small></p><button class="b" onclick="go('weigh')">Lanjut</button><button class="b s" onclick="go('bean')">Ganti biji</button>`;
- case 'weigh':return `${hd}<p>Tahan tombol untuk menggiling. Target <b>15 g</b> (minimal 5 g untuk lanjut).</p><div class="lcd" id="lcd">${S.grams.toFixed(1)} g</div><button class="b" id="gb" style="touch-action:none" onpointerdown="holdOn(event)" onpointerup="stopHold()" onpointercancel="stopHold()" onpointerleave="stopHold()">Tahan untuk menggiling</button><button class="b s" onclick="S.grams=Math.max(0,S.grams-1);updW()">Buang 1 g</button><button class="b" id="nx" onclick="go('prep')" ${S.grams<5?'disabled':''}>Lanjut</button><button class="b s" onclick="go('grind')">Kembali</button>`;
- case 'prep':{const P=['Pasang dripper di atas server','Letakkan dan bilas kertas filter','Masukkan kopi giling ke filter'];
-  return `${hd}<p>Lakukan berurutan:</p>`+P.map((t,i)=>`<button class="b s" ${i!==S.prep?'disabled':''} onclick="S.prep++;render()">${i<S.prep?'✓ ':''}${t}</button>`).join('')+(S.prep>=3?`<button class="b" onclick="go('temp')">Lanjut</button>`:'')+`<button class="b s" onclick="go('weigh')">Kembali</button>`}
- case 'temp':return `${hd}<p>Suhu air untuk <b>${bn.n}</b>. Saran: sekitar ${bn.t}°C.</p><div class="lcd" id="tv">${S.temp}°C</div><input type="range" min="80" max="100" step="1" value="${S.temp}" oninput="S.temp=+this.value;$('tv').textContent=S.temp+'°C'"><button class="b" onclick="go('brew')">Mulai seduh</button><button class="b s" onclick="go('prep')">Kembali</button>`;
- case 'brew':return `${hd}<p>Tampilan seduh sedang ditutup. Waktu berhenti sementara.</p><button class="b" onclick="openBrew()">Buka tampilan seduh</button>`;
+ case 'idle':return `${hd}<p>Belum ada pelanggan.</p><button class="b" onclick="go('order')">Panggil pelanggan</button><button class="b s sm" onclick="wipe()">Hapus data simpanan</button>`;
+ case 'order':return `${hd}<p>1 V60 · 15 g kopi · 225 g air</p><button class="b" onclick="go('bean')">Terima pesanan</button>`;
+ case 'bean':return `${hd}<div class="cards">`+BEANS.map((b,k)=>`<button class="b s card" onclick="S.bean=${k};go('grind')"><svg viewBox="0 0 6 8" width="24" height="32">${spr(BAG,0,0)}${R_(2,3,2,2,b.c)}</svg><b>${b.n.split(' ')[0]}</b><small>${b.r}</small></button>`).join('')+`</div>`;
+ case 'grind':return `${hd}<svg id="gpv" viewBox="0 0 48 10" style="width:100%;height:44px;background:#1d1713;border:2px solid #000">${gpv()}</svg><div class="rg"><span>halus</span><input type="range" min="1" max="10" step="1" value="${S.grind}" oninput="S.grind=+this.value;updG()"><span>kasar</span></div><p><small>${bn.n}: saran sekitar ${bn.g}</small></p><div class="two"><button class="b" onclick="go('weigh')">Lanjut</button>${bk('bean')}</div>`;
+ case 'weigh':return `${hd}<div class="lcd" id="lcd">${S.grams.toFixed(1)} g</div><div class="gg"><i id="gf" style="width:${cl(S.grams/30*100)}%"></i><b></b></div><button class="b" id="gb" style="touch-action:none" onpointerdown="holdOn(event)" onpointerup="stopHold()" onpointercancel="stopHold()" onpointerleave="stopHold()">Tahan untuk menggiling</button><div class="two"><button class="b" id="nx" onclick="go('prep')" ${S.grams<5?'disabled':''}>Lanjut</button><button class="b s" onclick="S.grams=Math.max(0,S.grams-1);updW()">Buang 1 g</button></div>${bk('grind')}`;
+ case 'prep':{const P=['Pasang dripper','Pasang dan bilas filter','Isi kopi giling'];
+  return `${hd}`+P.map((t,k)=>`<button class="b s" ${k!==S.prep?'disabled':''} onclick="S.prep++;render()">${k<S.prep?'✓ ':''}${t}</button>`).join('')+(S.prep>=3?`<button class="b" onclick="go('temp')">Lanjut</button>`:'')+bk('weigh')}
+ case 'temp':return `${hd}<div class="lcd" id="tv">${S.temp}°C</div><input type="range" min="80" max="100" step="1" value="${S.temp}" oninput="S.temp=+this.value;$('tv').textContent=S.temp+'°C';stm()"><p><small>Saran sekitar ${bn.t}°C</small></p><div class="two"><button class="b" onclick="go('brew')">Mulai seduh</button>${bk('prep')}</div>`;
+ case 'brew':return `${hd}<p>Waktu berhenti sementara.</p><button class="b" onclick="openBrew()">Buka tampilan seduh</button>`;
  case 'result':{const Rr=S.res;
   const rows=[['Rasio',`1:${Rr.ratio.toFixed(1)}`,Rr.sc.ratio],['Gilingan',S.grind,Rr.sc.grind],['Suhu',S.temp+'°C',Rr.sc.temp],['Waktu',fmt(Rr.total),Rr.sc.time],['Konsistensi','',Rr.sc.cons]];
-  return `${hd}`+rows.map(x=>`<div class="row"><span>${x[0]}</span><span>${x[1]}</span><b>${Math.round(x[2])}</b></div>`).join('')+`<p>Rasa menurut simulasi: ${Rr.taste}.</p><div class="lcd">Skor ${Math.round(Rr.score)}</div><button class="b" onclick="serve()">Sajikan kopi</button><p><small>Penilaian ini simulasi sederhana, bukan pengukuran ekstraksi sungguhan.</small></p>`}
- case 'served':return `${hd}<div class="stars">${'★'.repeat(S.stars)}${'☆'.repeat(5-S.stars)}</div><p>“${S.comment}”</p><p>Pendapatan: <b>Rp ${S.earn.toLocaleString('id-ID')}</b><br>Reputasi: ${S.d>=0?'+':''}${S.d}</p><button class="b" onclick="nextC()">Pelanggan berikutnya</button>`;
+  return `${hd}`+rows.map(x=>`<div class="row"><span>${x[0]}</span><span>${x[1]}</span><b>${Math.round(x[2])}</b></div>`).join('')+`<p>Rasa (simulasi): ${Rr.taste}</p><div class="lcd">Skor ${Math.round(Rr.score)}</div><button class="b" onclick="serve()">Sajikan kopi</button>`}
+ case 'served':return `${hd}<div class="stars">${'★'.repeat(S.stars)}${'☆'.repeat(5-S.stars)}</div><p>Rp ${S.earn.toLocaleString('id-ID')} · Reputasi ${S.d>=0?'+':''}${S.d}</p><button class="b" onclick="nextC()">Pelanggan berikutnya</button>`;
  }
 }
 
 // ===== Tombol di panel =====
 function holdOn(e){e.preventDefault();if(hold)return;hold=setInterval(()=>{S.grams=Math.min(30,S.grams+.25);updW()},80)}
 function stopHold(){if(hold){clearInterval(hold);hold=null}}
-function updW(){const l=$('lcd');if(!l)return;l.textContent=S.grams.toFixed(1)+' g';l.style.color=Math.abs(S.grams-15)<=.5?'#fff':'';$('nx').disabled=S.grams<5}
+function updW(){const l=$('lcd');if(!l)return;l.textContent=S.grams.toFixed(1)+' g';l.style.color=Math.abs(S.grams-15)<=.5?'#fff':'';const f=$('gf');if(f){f.style.width=cl(S.grams/30*100)+'%';f.style.background=Math.abs(S.grams-15)<=.5?'#8be08b':''}$('nx').disabled=S.grams<5}
 document.oncontextmenu=e=>{if(e.target.closest&&e.target.closest('#gb'))e.preventDefault()};
-function restart(){closeBrew();if(S.ph==='idle'||S.ph==='served'){newOrder();go('order')}else{const sh=S.shirt;newOrder();S.shirt=sh;go('bean')}}
-function nextC(){newOrder();go('order')}
+function restart(){clearTimeout(lt);leaving=false;closeBrew();if(S.ph==='idle'||S.ph==='served'){setCs('out');newOrder();go('order')}else{const sh=S.shirt;newOrder();S.shirt=sh;go('bean')}}
+function nextC(){if(leaving)return;leaving=true;setCs('leave');lt=setTimeout(()=>{leaving=false;newOrder();go('order')},850)}
 function wipe(){if(confirm('Hapus uang dan reputasi yang tersimpan?')){save={money:0,rep:0,served:0};persist();render()}}
 
 // ===== Tampilan seduh (dekat) =====
@@ -275,21 +327,40 @@ function loop(ts){
  raf=requestAnimationFrame(loop);
 }
 function draw(){
- $('sc').textContent=B.water.toFixed(1)+' g';
- $('tm').textContent=fmt(B.t);
- $('kt').setAttribute('transform',`translate(${B.kx.toFixed(1)},${B.ky.toFixed(1)})`);
- const on=Math.abs(B.kx-80)<=30,s=$('st');
- s.style.display=B.pour?'':'none';
- s.setAttribute('x',B.kx-1);s.setAttribute('y',B.ky+1);s.setAttribute('height',Math.max(1,(on?42:84)-B.ky-1));
- const h=B.dr/260*24;$('cf').setAttribute('y',84-h);$('cf').setAttribute('height',h);
- $('bed').setAttribute('fill',B.water>0?'#4a2c1a':'#8a6a46');
+ const pn=performance.now()/1000,dx=Math.abs(B.kx-80),on=dx<=30,f=B.flow;
+ $('sc').textContent=B.water.toFixed(1)+' g';$('tm').textContent=fmt(B.t);
+ B.tl=(B.tl||0)+((B.pour?20:0)-(B.tl||0))*.25;
+ $('kt').setAttribute('transform',`translate(${B.kx.toFixed(1)},${B.ky.toFixed(1)}) rotate(${(-B.tl).toFixed(1)})`);
+ const lift=B.bloomAt!==null?Math.max(0,3*(1-(B.t-B.bloomAt)/28)):3*Math.min(1,B.water/40);
+ const pool=cl((B.water-B.dr)/9,0,8),sy=42-lift-pool,h=B.dr/260*24,top=84-h;
+ $('bed').setAttribute('points',`55,42 80,${(42-lift).toFixed(1)} 105,42 94,52 66,52`);
+ $('bed').setAttribute('fill',mix('#8a6a46','#3a2214',Math.min(1,B.water/50)));
+ $('wv').setAttribute('y',sy.toFixed(1));$('wv').setAttribute('height',(pool+.1).toFixed(1));
+ $('cf').setAttribute('y',top);$('cf').setAttribute('height',h);
+ const s=$('st'),s2=$('st2'),ey=on?sy:84,sh=B.pour?'':'none';
+ [s,s2].forEach(e=>{e.style.display=sh;e.setAttribute('x1',B.kx);e.setAttribute('x2',B.kx);e.setAttribute('y1',B.ky+1.5);e.setAttribute('y2',ey)});
+ s.setAttribute('stroke-width',(1+f*.25).toFixed(2));s.setAttribute('stroke',f>9?'#e6f6ff':'#9fd6ff');s.setAttribute('stroke-dasharray',f<2.5?'1.5 2':'none');
+ s2.setAttribute('stroke-dashoffset',(-pn*30).toFixed(1));
+ let sp='';if(B.pour&&(!on||f>9))for(let i=0;i<4;i++)sp+=`<rect x="${(B.kx+(i-1.5)*3+Math.sin(pn*20+i)*1.5).toFixed(1)}" y="${(ey-1-Math.abs(Math.sin(pn*13+i))*3).toFixed(1)}" width="1" height="1"/>`;
+ $('spl').innerHTML=sp;
+ const rp=$('rip');rp.style.display=B.pour&&on?'':'none';rp.setAttribute('x',B.kx-3);rp.setAttribute('y',sy-.5);rp.setAttribute('opacity',(.4+.4*Math.sin(pn*12)).toFixed(2));
+ if(B.pour&&!on)B.spx=B.kx;
+ const pw=Math.min(46,B.spill*.9);$('pud').setAttribute('x',((B.spx||80)-pw/2).toFixed(1));$('pud').setAttribute('width',pw.toFixed(1));
+ let dr='';if(B.water-B.dr>.4&&top>56)for(let i=0;i<3;i++)dr+=`<rect x="79.5" y="${(53+((pn*46+i*9)%(top-53))).toFixed(1)}" width="1" height="2"/>`;
+ $('drp2').innerHTML=dr;
+ const bk=(B.water>5&&(B.bloomAt===null||B.t-B.bloomAt<25))?Math.floor(pn*4)+1:0;
+ if(bk!==B.bk){B.bk=bk;let b='';if(bk)for(let i=0;i<6;i++)b+=`<rect x="${60+((bk*37+i*53)%38)}" y="${(39-lift+((bk*11+i*7)%4)).toFixed(1)}" width="1.5" height="1.5"/>`;$('bub2').innerHTML=b}
+ const my=40*(1-(cl(f,1,12)-1)/11);
+ $('fm').setAttribute('y',my-1);$('fm').setAttribute('fill',(f>9||f<2.5)?'#c2412d':'#8be08b');
+ $('alr').setAttribute('opacity',B.pour&&(!on||f>9.5)?(.5+.4*Math.sin(pn*14)).toFixed(2):0);
 }
 function ui(){
  $('pb').textContent=B.pour?'Berhenti':'Mulai tuang';
  $('pb').classList.toggle('s',B.pour);
  $('fin').disabled=B.water<20||B.pour;
  const w=B.bloomAt!==null&&B.stage===1?20-(B.t-B.bloomAt):0;
- const h=w>0?`Bloom: tunggu ${Math.ceil(w)} detik lagi`:HINT[B.stage];
+ const dx=Math.abs(B.kx-80),warn=B.pour?(dx>30?'Meleset! Air tumpah.':B.flow>9?'Terlalu deras!':B.flow<2.5?'Terlalu pelan.':dx>14?'Arahkan ke tengah.':''):'';
+ const h=warn||(w>0?`Bloom: tunggu ${Math.ceil(w)} detik lagi`:HINT[B.stage]);
  const chips=T.map((g,i)=>`<span class="chip ${i<B.stage?'done':i===B.stage?'cur':''}">${i<B.stage?'✓ ':''}${g} g</span>`).join('');
  const k=chips+h+(B.spill>1?` | Tumpah ${B.spill.toFixed(0)} g`:'');
  if(k!==lastUi){lastUi=k;$('stg').innerHTML=chips+'<br>'+h+(B.spill>1?`<br>Tumpah: ${B.spill.toFixed(0)} g`:'')}
@@ -325,10 +396,10 @@ function serve(){
  S.stars=n;S.d=n>=4?2:n===3?1:-1;S.earn=10000+Math.round(Rr.score)*300;
  save.money+=S.earn;save.rep=Math.max(0,save.rep+S.d);save.served++;persist();
  S.mood=n>=4?1:n===3?0:2;S.comment=CM[n-1];
- go('served');
+ setCs('take');go('served');
 }
 
-buildScene();newOrder();render();sceneLoop();
+buildScene();newOrder();render();requestAnimationFrame(sceneLoop);
 </script>
 </body>
 </html>
